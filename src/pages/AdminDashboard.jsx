@@ -8,6 +8,7 @@ function AdminDashboard() {
   const [memberCount, setMemberCount] = useState(0)
   const [galleryCount, setGalleryCount] = useState(0)
   const [latestPhoto, setLatestPhoto] = useState(null)
+
   const [adminEmail, setAdminEmail] = useState('')
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -18,26 +19,27 @@ function AdminDashboard() {
   }, [])
 
   async function loadDashboard() {
-    setError('')
-
     try {
-      // Get logged-in admin
+      setRefreshing(true)
+      setError('')
+
+      // Get current user
       const {
-        data: userData,
+        data: { user },
         error: userError,
       } = await supabase.auth.getUser()
 
-      if (userError || !userData.user) {
+      if (userError || !user) {
         navigate('/login')
         return
       }
 
-      setAdminEmail(userData.user.email || '')
+      setAdminEmail(user.email || '')
 
-      // Get total members
+      // Get member count
       const {
-        count: members,
-        error: memberError,
+        count: membersCount,
+        error: membersError,
       } = await supabase
         .from('members')
         .select('*', {
@@ -45,15 +47,15 @@ function AdminDashboard() {
           head: true,
         })
 
-      if (memberError) {
-        throw memberError
+      if (membersError) {
+        throw membersError
       }
 
-      setMemberCount(members || 0)
+      setMemberCount(membersCount || 0)
 
-      // Get total gallery photos
+      // Get gallery count
       const {
-        count: gallery,
+        count: photosCount,
         error: galleryError,
       } = await supabase
         .from('gallery')
@@ -66,9 +68,9 @@ function AdminDashboard() {
         throw galleryError
       }
 
-      setGalleryCount(gallery || 0)
+      setGalleryCount(photosCount || 0)
 
-      // Get latest gallery photo
+      // Get latest gallery upload
       const {
         data: latest,
         error: latestError,
@@ -79,33 +81,27 @@ function AdminDashboard() {
           ascending: false,
         })
         .limit(1)
+        .maybeSingle()
 
       if (latestError) {
         throw latestError
       }
 
-      setLatestPhoto(
-        latest && latest.length > 0
-          ? latest[0]
-          : null
-      )
-
+      setLatestPhoto(latest || null)
     } catch (error) {
       console.error(
-        'Dashboard error:',
+        'DASHBOARD ERROR:',
         error
       )
 
-      setError(error.message)
+      setError(
+        error.message ||
+        'Unable to load dashboard.'
+      )
+    } finally {
+      setLoading(false)
+      setRefreshing(false)
     }
-
-    setLoading(false)
-    setRefreshing(false)
-  }
-
-  async function handleRefresh() {
-    setRefreshing(true)
-    await loadDashboard()
   }
 
   async function handleLogout() {
@@ -113,243 +109,174 @@ function AdminDashboard() {
     navigate('/login')
   }
 
-  function formatDate(date) {
-    if (!date) return 'No uploads yet'
-
-    return new Date(date).toLocaleDateString(
-      'en-IN',
-      {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      }
-    )
-  }
-
   return (
     <div className="admin-dashboard">
 
-      {/* =========================
-          HEADER
-      ========================= */}
-
+      {/* Header */}
       <div className="admin-header">
 
         <div>
-
           <p className="section-label">
             ADMIN PANEL
           </p>
 
           <h1>
-            Admin Dashboard
+            Dashboard
           </h1>
 
           <p>
             ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ
           </p>
-
         </div>
 
         <div className="admin-header-actions">
 
           <button
-            onClick={handleRefresh}
+            onClick={loadDashboard}
             className="refresh-btn"
             disabled={refreshing}
           >
             {refreshing
-              ? '⟳ Refreshing...'
-              : '🔄 Refresh'}
+              ? 'Refreshing...'
+              : '↻ Refresh'}
           </button>
 
           <button
             onClick={handleLogout}
             className="admin-logout-btn"
           >
-            🚪 Logout
+            Logout
           </button>
 
         </div>
 
       </div>
 
+      {/* Loading */}
+      {loading && (
+        <div className="admin-welcome-card">
+          <h2>
+            Loading dashboard...
+          </h2>
+        </div>
+      )}
 
-      {/* =========================
-          ADMIN INFO
-      ========================= */}
-
-      <div className="admin-welcome-card">
-
-        <div>
+      {/* Admin Welcome */}
+      {!loading && (
+        <div className="admin-welcome-card">
 
           <p className="section-label">
-            LOGGED IN AS
+            ADMIN ACCESS
           </p>
 
           <h2>
-            👤 Administrator
+            Welcome, Admin 👋
           </h2>
 
           <p>
-            {adminEmail || 'Loading...'}
+            You are logged in as:
           </p>
 
+          <p>
+            <strong>
+              {adminEmail}
+            </strong>
+          </p>
+
+          <div className="admin-status">
+            <span className="status-dot"></span>
+            Admin account active
+          </div>
+
         </div>
+      )}
 
-        <div className="admin-status">
-          <span className="status-dot"></span>
-          Online
-        </div>
-
-      </div>
-
-
-      {/* =========================
-          ERROR
-      ========================= */}
-
+      {/* Error */}
       {error && (
         <div className="dashboard-error">
           ⚠️ {error}
         </div>
       )}
 
-
-      {/* =========================
-          STATISTICS
-      ========================= */}
-
+      {/* Statistics */}
       <div className="admin-stats">
 
-        {/* Members */}
-
         <div className="stat-card">
-
           <div className="stat-icon">
             👥
           </div>
 
           <div>
-
-            <h3>
-              {loading
-                ? '...'
-                : memberCount}
-            </h3>
-
             <p>
               Total Members
             </p>
 
+            <h2>
+              {memberCount}
+            </h2>
           </div>
-
         </div>
 
-
-        {/* Gallery */}
-
         <div className="stat-card">
-
           <div className="stat-icon">
             🖼️
           </div>
 
           <div>
-
-            <h3>
-              {loading
-                ? '...'
-                : galleryCount}
-            </h3>
-
             <p>
               Gallery Photos
             </p>
 
+            <h2>
+              {galleryCount}
+            </h2>
           </div>
-
-        </div>
-
-
-        {/* System */}
-
-        <div className="stat-card">
-
-          <div className="stat-icon">
-            🔐
-          </div>
-
-          <div>
-
-            <h3>
-              Secure
-            </h3>
-
-            <p>
-              Admin System
-            </p>
-
-          </div>
-
         </div>
 
       </div>
 
-
-      {/* =========================
-          LATEST PHOTO
-      ========================= */}
-
+      {/* Latest Gallery */}
       <div className="dashboard-latest">
 
         <div className="dashboard-section-heading">
 
           <div>
-
             <p className="section-label">
-              LATEST ACTIVITY
+              LATEST UPLOAD
             </p>
 
             <h2>
-              Latest Gallery Upload
+              Latest Gallery Photo
             </h2>
-
           </div>
 
           <Link
-            to="/gallery-admin"
+            to="/gallery"
             className="dashboard-view-link"
           >
-            Manage Gallery →
+            View Gallery →
           </Link>
 
         </div>
 
-
-        {loading ? (
-
+        {!latestPhoto ? (
           <div className="latest-empty">
-            Loading latest upload...
+            <p>
+              No gallery photos uploaded yet.
+            </p>
           </div>
-
-        ) : latestPhoto ? (
-
+        ) : (
           <div className="latest-photo-card">
 
             <img
               src={latestPhoto.image_url}
               alt={
                 latestPhoto.title ||
-                'Latest Gallery Photo'
+                'Latest gallery photo'
               }
             />
 
             <div className="latest-photo-info">
-
-              <p className="section-label">
-                RECENT PHOTO
-              </p>
 
               <h3>
                 {latestPhoto.title ||
@@ -362,52 +289,21 @@ function AdminDashboard() {
                 </p>
               )}
 
-              <span>
-                📅 Uploaded on{' '}
-                {formatDate(
+              <small>
+                Uploaded on{' '}
+                {new Date(
                   latestPhoto.created_at
-                )}
-              </span>
+                ).toLocaleDateString()}
+              </small>
 
             </div>
 
           </div>
-
-        ) : (
-
-          <div className="latest-empty">
-
-            <div className="latest-empty-icon">
-              📸
-            </div>
-
-            <h3>
-              No gallery photos yet
-            </h3>
-
-            <p>
-              Upload your first photo to see
-              it here.
-            </p>
-
-            <Link
-              to="/gallery-admin"
-              className="primary-btn dashboard-upload-link"
-            >
-              📸 Upload Photo
-            </Link>
-
-          </div>
-
         )}
 
       </div>
 
-
-      {/* =========================
-          MANAGEMENT
-      ========================= */}
-
+      {/* Management */}
       <div className="admin-section">
 
         <p className="section-label">
@@ -420,11 +316,11 @@ function AdminDashboard() {
 
         <div className="admin-cards">
 
+          {/* Add Member */}
           <Link
             to="/add-member"
             className="admin-card"
           >
-
             <div className="admin-card-icon">
               ➕
             </div>
@@ -435,22 +331,20 @@ function AdminDashboard() {
               </h3>
 
               <p>
-                Add a new organization member
+                Add a new team member
               </p>
             </div>
 
             <span className="admin-card-link">
               →
             </span>
-
           </Link>
 
-
+          {/* Manage Members */}
           <Link
             to="/members"
             className="admin-card"
           >
-
             <div className="admin-card-icon">
               👥
             </div>
@@ -461,22 +355,44 @@ function AdminDashboard() {
               </h3>
 
               <p>
-                View and edit members
+                View and manage team members
               </p>
             </div>
 
             <span className="admin-card-link">
               →
             </span>
-
           </Link>
 
+          {/* Notification Center */}
+          <Link
+            to="/send-notification"
+            className="admin-card"
+          >
+            <div className="admin-card-icon">
+              🔔
+            </div>
 
+            <div>
+              <h3>
+                Notification Center
+              </h3>
+
+              <p>
+                Send updates to team members
+              </p>
+            </div>
+
+            <span className="admin-card-link">
+              →
+            </span>
+          </Link>
+
+          {/* Gallery Management */}
           <Link
             to="/gallery-admin"
             className="admin-card"
           >
-
             <div className="admin-card-icon">
               🖼️
             </div>
@@ -487,22 +403,20 @@ function AdminDashboard() {
               </h3>
 
               <p>
-                Upload and manage photos
+                Upload and manage gallery photos
               </p>
             </div>
 
             <span className="admin-card-link">
               →
             </span>
-
           </Link>
 
-
+          {/* View Website */}
           <Link
             to="/"
             className="admin-card"
           >
-
             <div className="admin-card-icon">
               🌐
             </div>
@@ -520,7 +434,6 @@ function AdminDashboard() {
             <span className="admin-card-link">
               →
             </span>
-
           </Link>
 
         </div>
