@@ -8,6 +8,13 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -31,7 +38,9 @@ select {
 }
 
 .website {
+  width: 100%;
   min-height: 100vh;
+
   background:
     radial-gradient(
       circle at 50% 20%,
@@ -39,6 +48,8 @@ select {
       #120a05 35%,
       #050505 70%
     );
+
+  overflow-x: hidden;
 }
 
 
@@ -50,6 +61,8 @@ select {
   position: sticky;
   top: 0;
   z-index: 1000;
+
+  width: 100%;
 
   display: flex;
   justify-content: space-between;
@@ -69,6 +82,8 @@ select {
   color: #ffd54a;
   font-size: 20px;
   font-weight: 800;
+
+  line-height: 1.4;
 }
 
 .nav-links {
@@ -113,6 +128,7 @@ select {
 ========================================================= */
 
 .hero-section {
+  width: 100%;
   min-height: 650px;
 
   display: flex;
@@ -122,6 +138,8 @@ select {
   gap: 50px;
 
   padding: 80px 8%;
+
+  overflow: hidden;
 }
 
 .hero-content {
@@ -704,25 +722,23 @@ footer p {
 ========================================================= */
 
 .gallery-year-selector {
-  display: flex;
+  max-width: 350px;
 
-  justify-content: center;
+  margin: 0 auto 45px;
 
-  align-items: center;
-
-  gap: 12px;
-
-  margin: 25px auto 40px;
-
-  padding: 0 20px;
+  text-align: center;
 }
 
 .gallery-year-selector label {
-  color: #aaa;
+  display: block;
 
-  font-size: 15px;
+  margin-bottom: 12px;
 
-  font-weight: 600;
+  color: #ffd54f;
+
+  font-size: 14px;
+
+  font-weight: 700;
 }
 
 .gallery-year-selector select {
@@ -785,6 +801,8 @@ footer p {
 
   overflow: hidden;
 
+  min-width: 0;
+
   background: #120b08;
 
   border: 1px solid
@@ -814,20 +832,35 @@ footer p {
 
 
 /* =========================================================
-   GALLERY IMAGE + VIDEO
+   PUBLIC GALLERY MEDIA
 ========================================================= */
 
-.photo-card img,
-.photo-card video {
-  width: 100%;
+.photo-media-container {
+  position: relative;
 
-  height: 100%;
+  width: 100%;
+  height: 280px;
+
+  overflow: hidden;
+
+  background: #080604;
+}
+
+.photo-media-container img,
+.photo-media-container video {
+  width: 100% !important;
+
+  height: 280px !important;
+
+  max-width: 100% !important;
+
+  max-height: 280px !important;
+
+  object-fit: cover !important;
 
   display: block;
 
-  object-fit: cover;
-
-  background: #080808;
+  background: #000;
 }
 
 
@@ -995,6 +1028,24 @@ footer p {
   display: block;
 }
 
+.viewer-content video.viewer-video {
+  display: block;
+
+  width: auto;
+
+  max-width: 90vw;
+
+  height: auto;
+
+  max-height: 72vh;
+
+  border-radius: 12px;
+
+  margin: 0 auto;
+
+  background: #000;
+}
+
 .viewer-info {
   margin-top: 15px;
 
@@ -1110,6 +1161,8 @@ footer p {
   background: #0b0705;
 
   color: white;
+
+  overflow-x: hidden;
 }
 
 .admin-header {
@@ -1305,6 +1358,12 @@ footer p {
   color: #ffd54f;
 }
 
+.admin-card h3 {
+  margin: 0 0 12px;
+
+  color: #ffd54f;
+}
+
 .admin-card p {
   color: #999;
 
@@ -1387,29 +1446,56 @@ footer p {
 ========================================================= */
 
 .upload-preview {
-  margin: 10px 0 20px;
+  width: 100%;
+
+  margin: 15px 0 25px;
 }
 
-.upload-preview p {
+.upload-preview > p {
   color: #ffd54f;
 
   margin-bottom: 10px;
 }
 
-.upload-preview img,
-.upload-preview video {
-  width: 180px;
+.upload-preview-box {
+  width: 220px;
+  height: 150px;
 
-  height: 130px;
+  overflow: hidden;
 
-  object-fit: cover;
+  border-radius: 12px;
 
-  border-radius: 10px;
+  background: #080604;
 
   border: 1px solid
     rgba(255, 193, 7, 0.3);
+}
 
-  background: #000;
+.upload-preview-media {
+  width: 100% !important;
+
+  height: 150px !important;
+
+  max-width: 100% !important;
+
+  max-height: 150px !important;
+
+  object-fit: cover !important;
+
+  display: block;
+}
+
+.upload-preview-box img,
+.upload-preview-box video {
+  width: 100% !important;
+
+  height: 150px !important;
+
+  max-width: 100% !important;
+
+  max-height: 150px !important;
+
+  object-fit: cover !important;
 
   display: block;
 }
@@ -1441,6 +1527,8 @@ footer p {
 .admin-gallery-card {
   overflow: hidden;
 
+  min-width: 0;
+
   background: #120b08;
 
   border: 1px solid
@@ -1458,15 +1546,48 @@ footer p {
 }
 
 
-/* ADMIN IMAGE + VIDEO */
+/* =========================================================
+   ADMIN MEDIA
+========================================================= */
 
-.admin-gallery-card > img,
-.admin-gallery-card > video {
+.admin-media-container {
+  position: relative;
+
   width: 100%;
-
   height: 230px;
 
-  object-fit: cover;
+  overflow: hidden;
+
+  background: #080604;
+}
+
+.admin-gallery-media {
+  display: block;
+
+  width: 100% !important;
+
+  height: 230px !important;
+
+  max-width: 100% !important;
+
+  max-height: 230px !important;
+
+  object-fit: cover !important;
+
+  object-position: center;
+}
+
+.admin-media-container img,
+.admin-media-container video {
+  width: 100% !important;
+
+  height: 230px !important;
+
+  max-width: 100% !important;
+
+  max-height: 230px !important;
+
+  object-fit: cover !important;
 
   display: block;
 
@@ -1474,7 +1595,38 @@ footer p {
 }
 
 
-/* ADMIN INFO */
+/* =========================================================
+   MEDIA TYPE BADGE
+========================================================= */
+
+.media-type-badge {
+  position: absolute;
+
+  top: 12px;
+  left: 12px;
+
+  padding: 6px 11px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(0, 0, 0, 0.75);
+
+  color: #fff;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+
+  backdrop-filter: blur(5px);
+}
+
+
+/* =========================================================
+   ADMIN INFO
+========================================================= */
 
 .admin-gallery-info {
   padding: 20px;
@@ -1498,6 +1650,28 @@ footer p {
   color: #999;
 
   padding: 30px 0;
+}
+
+.admin-gallery-year {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  padding: 5px 10px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(255, 193, 7, 0.1);
+
+  border: 1px solid
+    rgba(255, 193, 7, 0.25);
+
+  color: #ffd54f;
+
+  font-size: 12px;
+
+  font-weight: 700;
 }
 
 
@@ -1936,106 +2110,24 @@ footer p {
 
 
 /* =========================================================
-   MOBILE - NAVBAR + HERO
+   TABLET
 ========================================================= */
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
 
   .navbar {
-    flex-direction: column;
-
-    gap: 15px;
-
-    padding: 15px 5%;
-  }
-
-  .nav-logo {
-    text-align: center;
-
-    font-size: 17px;
+    padding-left: 4%;
+    padding-right: 4%;
   }
 
   .nav-links {
     gap: 15px;
-
-    flex-wrap: wrap;
-
-    justify-content: center;
-  }
-
-  .nav-links a {
-    font-size: 14px;
   }
 
   .hero-section {
-    flex-direction: column-reverse;
-
-    text-align: center;
-
-    padding-top: 50px;
+    padding-left: 5%;
+    padding-right: 5%;
   }
-
-  .hero-logo {
-    max-width: 80%;
-
-    width: 350px;
-  }
-
-  .hero-buttons {
-    justify-content: center;
-
-    flex-wrap: wrap;
-  }
-
-  .member-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .about-section h2,
-  .members-section h2,
-  .gallery-section h2,
-  .contact-section h2 {
-    font-size: 30px;
-  }
-}
-
-
-/* =========================================================
-   MOBILE MEMBERS
-========================================================= */
-
-@media (max-width: 700px) {
-
-  .members-page {
-    padding: 50px 5%;
-  }
-
-  .members-header h1 {
-    font-size: 32px;
-  }
-
-  .members-list {
-    grid-template-columns: 1fr;
-  }
-
-  .member-profile {
-    padding: 20px;
-  }
-
-  .member-profile-image {
-    width: 80px;
-
-    height: 80px;
-  }
-
-}
-
-
-/* =========================================================
-   TABLET GALLERY
-========================================================= */
-
-@media (max-width: 900px) {
 
   .gallery-grid {
     grid-template-columns:
@@ -2056,12 +2148,272 @@ footer p {
 
 
 /* =========================================================
+   MOBILE NAVBAR + HERO
+========================================================= */
+
+@media (max-width: 800px) {
+
+  /* =========================
+     NAVBAR
+  ========================= */
+
+  .navbar {
+    position: sticky;
+
+    top: 0;
+
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    padding: 12px 12px;
+
+    overflow: hidden;
+  }
+
+  .nav-logo {
+    width: 100%;
+
+    max-width: 100%;
+
+    text-align: center;
+
+    font-size: 16px;
+
+    line-height: 1.4;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+  }
+
+  .nav-links {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 7px 10px;
+
+    overflow: hidden;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+
+    white-space: nowrap;
+  }
+
+  .admin-nav-btn {
+    padding: 7px 10px;
+
+    font-size: 12px !important;
+  }
+
+  .login-btn {
+    padding: 7px 12px;
+
+    font-size: 13px;
+  }
+
+
+  /* =========================
+     HERO
+  ========================= */
+
+  .hero-section {
+    width: 100%;
+
+    min-height: auto;
+
+    display: flex;
+
+    flex-direction: column-reverse;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    gap: 30px;
+
+    padding: 50px 20px 70px;
+
+    overflow: hidden;
+  }
+
+  .hero-content {
+    width: 100%;
+
+    max-width: 650px;
+  }
+
+  .small-title {
+    font-size: 18px;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(32px, 9vw, 48px);
+
+    line-height: 1.25;
+
+    word-break: normal;
+
+    overflow-wrap: anywhere;
+  }
+
+  .hero-description {
+    font-size: 16px;
+
+    line-height: 1.7;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    padding: 12px 20px;
+
+    font-size: 14px;
+  }
+
+  .hero-logo {
+    width: 270px;
+
+    max-width: 75%;
+  }
+
+  .hero-logo img {
+    width: 100%;
+  }
+
+
+  /* =========================
+     COMMON SECTIONS
+  ========================= */
+
+  .about-section,
+  .members-section,
+  .gallery-section,
+  .contact-section {
+    padding: 65px 20px;
+  }
+
+  .about-section h2,
+  .members-section h2,
+  .gallery-section h2,
+  .contact-section h2 {
+    font-size: 30px;
+
+    line-height: 1.3;
+  }
+
+  .about-section > p:last-child {
+    font-size: 16px;
+
+    line-height: 1.7;
+  }
+
+
+  /* =========================
+     MEMBERS
+  ========================= */
+
+  .member-grid {
+    grid-template-columns: 1fr;
+
+    width: 100%;
+
+    gap: 18px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE MEMBERS
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .members-page {
+    padding: 50px 15px;
+  }
+
+  .members-header h1 {
+    font-size: 32px;
+
+    line-height: 1.3;
+  }
+
+  .members-list {
+    grid-template-columns: 1fr;
+
+    width: 100%;
+  }
+
+  .member-profile {
+    width: 100%;
+
+    padding: 18px;
+
+    gap: 15px;
+
+    align-items: center;
+  }
+
+  .member-profile-image {
+    width: 80px;
+
+    height: 80px;
+  }
+
+  .member-info {
+    min-width: 0;
+  }
+
+  .member-info h2 {
+    font-size: 18px;
+
+    overflow-wrap: anywhere;
+  }
+
+  .member-actions {
+    flex-wrap: wrap;
+  }
+
+}
+
+
+/* =========================================================
    MOBILE GALLERY
 ========================================================= */
 
 @media (max-width: 600px) {
 
   .gallery-page {
+    width: 100%;
+
     padding: 40px 15px;
   }
 
@@ -2071,35 +2423,67 @@ footer p {
 
   .gallery-header h1 {
     font-size: 30px;
+
+    line-height: 1.3;
   }
 
   .gallery-grid {
+    width: 100%;
+
     grid-template-columns: 1fr;
 
     gap: 18px;
   }
 
-  /*
-     IMPORTANT:
-     Portrait images/videos still stay inside
-     a fixed 4:3 card.
-  */
-
   .photo-card {
+    width: 100%;
+
     aspect-ratio: 4 / 3;
   }
 
+  .photo-media-container {
+    height: 260px;
+  }
+
+  .photo-media-container img,
+  .photo-media-container video {
+    height: 260px !important;
+
+    max-height: 260px !important;
+  }
+
+
+  /* =========================
+     YEAR SELECTOR
+  ========================= */
+
   .gallery-year-selector {
-    flex-direction: column;
+    width: 100%;
 
-    gap: 8px;
+    max-width: 100%;
 
-    margin-bottom: 30px;
+    margin-bottom: 35px;
+
+    padding: 0;
   }
 
-  .gallery-year-selector select {
-    width: 180px;
+  .gallery-year-selector select,
+  .public-gallery-year-select {
+    width: 100%;
+
+    min-width: 0;
+
+    font-size: 16px;
   }
+
+  .selected-gallery-year h2 {
+    font-size: 24px;
+  }
+
+
+  /* =========================
+     GALLERY CONTENT
+  ========================= */
 
   .photo-card-content {
     padding: 40px 15px 15px;
@@ -2113,19 +2497,32 @@ footer p {
     font-size: 12px;
   }
 
-  /* Viewer */
+
+  /* =========================
+     VIEWER
+  ========================= */
 
   .photo-viewer {
     padding: 15px;
   }
 
   .viewer-content {
-    max-width: 95%;
+    width: 100%;
+
+    max-width: 95vw;
+
+    max-height: 90vh;
   }
 
   .viewer-content img,
   .viewer-content video {
-    max-width: 95vw;
+    max-width: 94vw;
+
+    max-height: 65vh;
+  }
+
+  .viewer-content video.viewer-video {
+    max-width: 94vw;
 
     max-height: 65vh;
   }
@@ -2151,6 +2548,10 @@ footer p {
     top: 15px;
 
     right: 15px;
+
+    width: 42px;
+
+    height: 42px;
   }
 
   .viewer-info h2 {
@@ -2161,29 +2562,35 @@ footer p {
     font-size: 14px;
   }
 
-  /* Admin */
 
-  .admin-gallery-grid {
-    grid-template-columns: 1fr;
+  /* =========================
+     ADMIN
+  ========================= */
+
+  .admin-dashboard {
+    padding: 40px 15px;
   }
 
-  .admin-gallery-card > img,
-  .admin-gallery-card > video {
-    height: 250px;
+  .admin-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 20px;
+
+    margin-bottom: 35px;
   }
 
-  .admin-upload-card {
-    padding: 25px 18px;
-  }
+  .admin-header h1 {
+    font-size: 30px;
 
-  .admin-stats {
-    grid-template-columns: 1fr;
+    line-height: 1.3;
   }
 
   .admin-header-actions {
     width: 100%;
 
-    margin-top: 20px;
+    margin-top: 5px;
   }
 
   .refresh-btn,
@@ -2197,6 +2604,69 @@ footer p {
     align-items: flex-start;
 
     gap: 20px;
+  }
+
+  .admin-stats {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+
+    margin-bottom: 40px;
+  }
+
+  .admin-cards {
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+  }
+
+  .admin-card {
+    padding: 22px;
+  }
+
+  .admin-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-gallery-card > img,
+  .admin-gallery-card > video {
+    height: 250px;
+  }
+
+  .admin-media-container {
+    height: 250px;
+  }
+
+  .admin-gallery-media,
+  .admin-media-container img,
+  .admin-media-container video {
+    height: 250px !important;
+
+    max-height: 250px !important;
+  }
+
+  .admin-upload-card {
+    width: 100%;
+
+    padding: 25px 18px;
+  }
+
+  .upload-preview-box {
+    width: 200px;
+
+    height: 140px;
+  }
+
+  .upload-preview-media,
+  .upload-preview-box img,
+  .upload-preview-box video {
+    height: 140px !important;
+
+    max-height: 140px !important;
+  }
+
+  .gallery-action-buttons {
+    flex-direction: row;
   }
 
   .dashboard-section-heading {
@@ -2216,479 +2686,107 @@ footer p {
     height: 220px;
   }
 
-  .gallery-action-buttons {
-    flex-direction: row;
-  }
-
   .social-logo {
     width: 38px;
 
     height: 38px;
   }
-}
-/* =====================================================
-   FIXED GALLERY MEDIA - PHOTO + VIDEO
-   ===================================================== */
 
-/* Admin gallery card */
-.admin-gallery-card {
-  overflow: hidden;
-  min-width: 0;
 }
 
-/* Fixed media container */
-.admin-media-container {
-  position: relative;
-  width: 100%;
-  height: 230px;
-  overflow: hidden;
-  background: #080604;
-}
 
-/* BOTH IMAGE AND VIDEO MUST STAY INSIDE THIS BOX */
-.admin-gallery-media {
-  display: block;
-  width: 100% !important;
-  height: 230px !important;
-  max-width: 100% !important;
-  max-height: 230px !important;
-  object-fit: cover !important;
-  object-position: center;
-}
+/* =========================================================
+   SMALL PHONES
+========================================================= */
 
-/* Video specific */
-.admin-media-container video {
-  width: 100% !important;
-  height: 230px !important;
-  max-width: 100% !important;
-  max-height: 230px !important;
-  object-fit: cover !important;
-  display: block;
-}
+@media (max-width: 400px) {
 
-/* Image specific */
-.admin-media-container img {
-  width: 100% !important;
-  height: 230px !important;
-  max-width: 100% !important;
-  max-height: 230px !important;
-  object-fit: cover !important;
-  display: block;
-}
-
-/* PHOTO / VIDEO label */
-.media-type-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-
-  padding: 6px 11px;
-
-  border-radius: 20px;
-
-  background: rgba(0, 0, 0, 0.75);
-
-  color: #fff;
-
-  font-size: 11px;
-  font-weight: 800;
-
-  letter-spacing: 0.5px;
-
-  backdrop-filter: blur(5px);
-}
-
-/* =====================================================
-   UPLOAD PREVIEW
-   ===================================================== */
-
-.upload-preview {
-  width: 100%;
-  margin: 15px 0 25px;
-}
-
-.upload-preview > p {
-  color: #ffd54f;
-  margin-bottom: 10px;
-}
-
-/* Fixed preview box */
-.upload-preview-box {
-  width: 220px;
-  height: 150px;
-
-  overflow: hidden;
-
-  border-radius: 12px;
-
-  background: #080604;
-
-  border: 1px solid rgba(255, 193, 7, 0.3);
-}
-
-/* Preview image + video */
-.upload-preview-media {
-  width: 100% !important;
-  height: 150px !important;
-
-  max-width: 100% !important;
-  max-height: 150px !important;
-
-  object-fit: cover !important;
-
-  display: block;
-}
-
-/* Video preview */
-.upload-preview-box video {
-  width: 100% !important;
-  height: 150px !important;
-  object-fit: cover !important;
-}
-
-/* Image preview */
-.upload-preview-box img {
-  width: 100% !important;
-  height: 150px !important;
-  object-fit: cover !important;
-}
-
-/* =====================================================
-   PUBLIC GALLERY - PHOTO + VIDEO
-   ===================================================== */
-
-.photo-card {
-  overflow: hidden;
-  min-width: 0;
-}
-
-.photo-media-container {
-  position: relative;
-  width: 100%;
-  height: 280px;
-  overflow: hidden;
-  background: #080604;
-}
-
-.photo-media-container img,
-.photo-media-container video {
-  width: 100% !important;
-  height: 280px !important;
-  max-width: 100% !important;
-  max-height: 280px !important;
-  object-fit: cover !important;
-  display: block;
-}
-
-/* =====================================================
-   MOBILE
-   ===================================================== */
-
-@media (max-width: 600px) {
-
-  .admin-media-container {
-    height: 250px;
+  .navbar {
+    padding: 10px 8px;
   }
 
-  .admin-gallery-media,
-  .admin-media-container img,
-  .admin-media-container video {
-    height: 250px !important;
-    max-height: 250px !important;
+  .nav-logo {
+    font-size: 14px;
+
+    line-height: 1.35;
   }
 
-  .upload-preview-box {
-    width: 200px;
-    height: 140px;
+  .nav-links {
+    gap: 6px 8px;
   }
 
-  .upload-preview-media,
-  .upload-preview-box img,
-  .upload-preview-box video {
-    height: 140px !important;
-    max-height: 140px !important;
+  .nav-links a {
+    font-size: 12px;
   }
 
-}/* =====================================================
-   GALLERY YEAR SELECT
-   ===================================================== */
+  .admin-nav-btn {
+    padding: 6px 8px;
 
-.gallery-year-select {
-  width: 100%;
-  padding: 14px 16px;
-  margin-bottom: 10px;
-
-  background: #0b0705;
-  color: #ffd54f;
-
-  border: 1px solid #444;
-  border-radius: 10px;
-
-  font-size: 16px;
-  font-family: inherit;
-
-  cursor: pointer;
-}
-
-.gallery-year-select:focus {
-  outline: none;
-  border-color: #d9a400;
-  box-shadow: 0 0 0 2px rgba(217, 164, 0, 0.12);
-}
-
-.gallery-year-select option {
-  background: #120b08;
-  color: #fff;
-}
-
-
-/* =====================================================
-   ADMIN GALLERY YEAR
-   ===================================================== */
-
-.admin-gallery-year {
-  display: inline-block;
-
-  margin-bottom: 10px;
-
-  padding: 5px 10px;
-
-  border-radius: 20px;
-
-  background: rgba(255, 193, 7, 0.1);
-
-  border: 1px solid rgba(255, 193, 7, 0.25);
-
-  color: #ffd54f;
-
-  font-size: 12px;
-  font-weight: 700;
-}
-
-
-/* =====================================================
-   PUBLIC GALLERY YEAR SELECTOR
-   ===================================================== */
-
-.gallery-year-selector {
-  max-width: 350px;
-  margin: 0 auto 45px;
-
-  text-align: center;
-}
-
-.gallery-year-selector label {
-  display: block;
-
-  margin-bottom: 12px;
-
-  color: #ffd54f;
-
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.public-gallery-year-select {
-  width: 100%;
-
-  padding: 14px 18px;
-
-  background: #120b08;
-
-  color: #ffd54f;
-
-  border: 1px solid rgba(255, 193, 7, 0.4);
-
-  border-radius: 12px;
-
-  font-size: 17px;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  outline: none;
-}
-
-.public-gallery-year-select:hover {
-  border-color: #f5b400;
-}
-
-.public-gallery-year-select:focus {
-  border-color: #ffd54f;
-
-  box-shadow:
-    0 0 0 2px rgba(255, 193, 7, 0.12);
-}
-
-.public-gallery-year-select option {
-  background: #120b08;
-  color: white;
-}
-
-
-/* =====================================================
-   SELECTED YEAR HEADING
-   ===================================================== */
-
-.selected-gallery-year {
-  text-align: center;
-
-  margin-bottom: 30px;
-}
-
-.selected-gallery-year h2 {
-  color: #ffd54f;
-
-  font-size: 28px;
-
-  margin: 0;
-}
-
-
-/* =====================================================
-   PUBLIC VIDEO
-   ===================================================== */
-
-.photo-media-container {
-  position: relative;
-
-  width: 100%;
-  height: 280px;
-
-  overflow: hidden;
-
-  background: #080604;
-}
-
-.photo-media-container img,
-.photo-media-container video {
-  width: 100% !important;
-  height: 280px !important;
-
-  max-width: 100% !important;
-  max-height: 280px !important;
-
-  object-fit: cover !important;
-
-  display: block;
-}
-
-
-/* =====================================================
-   NO MEDIA FOR SELECTED YEAR
-   ===================================================== */
-
-.no-year-media {
-  max-width: 600px;
-
-  margin: 50px auto;
-
-  padding: 40px 25px;
-
-  text-align: center;
-
-  background: #120b08;
-
-  border: 1px solid rgba(255, 193, 7, 0.2);
-
-  border-radius: 18px;
-}
-
-.no-year-media h3 {
-  color: #ffd54f;
-
-  margin-bottom: 10px;
-}
-
-.no-year-media p {
-  color: #999;
-}
-
-
-/* =====================================================
-   MOBILE
-   ===================================================== */
-
-@media (max-width: 600px) {
-
-  .gallery-year-selector {
-    max-width: 100%;
-    margin-bottom: 35px;
+    font-size: 11px !important;
   }
 
-  .public-gallery-year-select {
+  .login-btn {
+    padding: 6px 10px;
+
+    font-size: 12px;
+  }
+
+  .hero-section {
+    padding-left: 15px;
+
+    padding-right: 15px;
+  }
+
+  .hero-content h1 {
+    font-size: 30px;
+  }
+
+  .hero-logo {
+    width: 230px;
+
+    max-width: 70%;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    padding: 11px 16px;
+
+    font-size: 13px;
+  }
+
+  .member-profile {
+    padding: 15px;
+
+    gap: 12px;
+  }
+
+  .member-profile-image {
+    width: 70px;
+
+    height: 70px;
+  }
+
+  .member-info h2 {
     font-size: 16px;
   }
 
-  .selected-gallery-year h2 {
-    font-size: 24px;
-  }
-
-  .photo-media-container {
-    height: 260px;
-  }
-
-  .photo-media-container img,
-  .photo-media-container video {
-    height: 260px !important;
-    max-height: 260px !important;
-  }
-
-}
-/* =====================================================
-   FULL SCREEN VIDEO VIEWER
-   ===================================================== */
-
-.viewer-content video.viewer-video {
-  display: block;
-
-  width: auto;
-  max-width: 90vw;
-
-  height: auto;
-  max-height: 72vh;
-
-  border-radius: 12px;
-
-  margin: 0 auto;
-
-  background: #000;
 }
 
 
-/* =====================================================
-   GALLERY CARD VIDEO
-   ===================================================== */
+/* =========================================================
+   NO HORIZONTAL OVERFLOW
+========================================================= */
 
-.photo-media-container video {
-  width: 100% !important;
-  height: 280px !important;
-
-  max-width: 100% !important;
-  max-height: 280px !important;
-
-  object-fit: cover !important;
-
-  display: block;
-
-  background: #000;
+img,
+video,
+iframe,
+canvas {
+  max-width: 100%;
 }
 
-
-/* =====================================================
-   MOBILE VIDEO VIEWER
-   ===================================================== */
-
-@media (max-width: 600px) {
-
-  .viewer-content video.viewer-video {
-    max-width: 94vw;
-    max-height: 65vh;
-  }
-
-  .photo-media-container video {
-    height: 260px !important;
-    max-height: 260px !important;
-  }
-
+input,
+textarea,
+select,
+button {
+  max-width: 100%;
 }

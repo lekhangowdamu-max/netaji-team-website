@@ -1,4 +1,5 @@
 import webpush from "npm:web-push@3.6.7"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,13 +16,115 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const vapidPublicKey = Deno.env.get("VAPID_PUBLIC_KEY")
-    const vapidPrivateKey = Deno.env.get("VAPID_PRIVATE_KEY")
+    const supabaseUrl =
+      Deno.env.get("SUPABASE_URL")
 
-    if (!vapidPublicKey || !vapidPrivateKey) {
+    const anonKey =
+      Deno.env.get("SUPABASE_ANON_KEY")
+
+    const serviceRoleKey =
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")
+
+    if (
+      !supabaseUrl ||
+      !anonKey ||
+      !serviceRoleKey
+    ) {
       return Response.json(
         {
-          error: "VAPID keys are not configured.",
+          error:
+            "Supabase server configuration is missing.",
+        },
+        {
+          status: 500,
+          headers: corsHeaders,
+        }
+      )
+    }
+
+    // Check the logged-in user
+    const supabaseUser = createClient(
+      supabaseUrl,
+      anonKey,
+      {
+        global: {
+          headers: {
+            Authorization:
+              req.headers.get("Authorization") ?? "",
+          },
+        },
+      }
+    )
+
+    const {
+      data: { user },
+      error: userError,
+    } =
+      await supabaseUser.auth.getUser()
+
+    if (userError || !user) {
+      return Response.json(
+        {
+          error:
+            "You must be logged in to send notifications.",
+        },
+        {
+          status: 401,
+          headers: corsHeaders,
+        }
+      )
+    }
+
+    // Use service role only on the server
+    const supabaseAdmin =
+      createClient(
+        supabaseUrl,
+        serviceRoleKey
+      )
+
+    // Check admin role
+    const {
+      data: profile,
+      error: profileError,
+    } =
+      await supabaseAdmin
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single()
+
+    if (
+      profileError ||
+      !profile ||
+      profile.role !== "admin"
+    ) {
+      return Response.json(
+        {
+          error:
+            "Only the admin can send notifications.",
+        },
+        {
+          status: 403,
+          headers: corsHeaders,
+        }
+      )
+    }
+
+    // VAPID configuration
+    const vapidPublicKey =
+      Deno.env.get("VAPID_PUBLIC_KEY")
+
+    const vapidPrivateKey =
+      Deno.env.get("VAPID_PRIVATE_KEY")
+
+    if (
+      !vapidPublicKey ||
+      !vapidPrivateKey
+    ) {
+      return Response.json(
+        {
+          error:
+            "VAPID keys are not configured.",
         },
         {
           status: 500,
@@ -46,17 +149,25 @@ Deno.serve(async (req) => {
       body.body ||
       "ನಿಮಗೆ ಹೊಸ ಅಪ್‌ಡೇಟ್ ಇದೆ."
 
-    const url = body.url || "/"
+    const url =
+      body.url || "/"
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")
-    const serviceRoleKey =
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")
+    // Load all subscriptions
+    const {
+      data: subscriptions,
+      error: subscriptionsError,
+    } =
+      await supabaseAdmin
+        .from("notification_subscriptions")
+        .select(
+          "id,user_id,endpoint,p256dh,auth"
+        )
 
-    if (!supabaseUrl || !serviceRoleKey) {
+    if (subscriptionsError) {
       return Response.json(
         {
           error:
-            "Supabase server configuration is missing.",
+            subscriptionsError.message,
         },
         {
           status: 500,
@@ -65,35 +176,21 @@ Deno.serve(async (req) => {
       )
     }
 
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/notification_subscriptions?select=id,user_id,endpoint,p256dh,auth`,
-      {
-        headers: {
-          apikey: serviceRoleKey,
-          Authorization: `Bearer ${serviceRoleKey}`,
-        },
-      }
-    )
-
-    if (!response.ok) {
-      throw new Error(
-        `Unable to load subscriptions: ${await response.text()}`
-      )
-    }
-
-    const subscriptions = await response.json()
-
     let sent = 0
     let failed = 0
 
-    for (const subscription of subscriptions) {
+    for (const subscription of
+      subscriptions || []) {
       try {
         await webpush.sendNotification(
           {
-            endpoint: subscription.endpoint,
+            endpoint:
+              subscription.endpoint,
             keys: {
-              p256dh: subscription.p256dh,
-              auth: subscription.auth,
+              p256dh:
+                subscription.p256dh,
+              auth:
+                subscription.auth,
             },
           },
           JSON.stringify({
@@ -112,20 +209,20 @@ Deno.serve(async (req) => {
 
         failed++
 
+        // Remove expired subscriptions
         if (
           error?.statusCode === 404 ||
           error?.statusCode === 410
         ) {
-          await fetch(
-            `${supabaseUrl}/rest/v1/notification_subscriptions?id=eq.${subscription.id}`,
-            {
-              method: "DELETE",
-              headers: {
-                apikey: serviceRoleKey,
-                Authorization: `Bearer ${serviceRoleKey}`,
-              },
-            }
-          )
+          await supabaseAdmin
+            .from(
+              "notification_subscriptions"
+            )
+            .delete()
+            .eq(
+              "id",
+              subscription.id
+            )
         }
       }
     }
@@ -136,7 +233,7 @@ Deno.serve(async (req) => {
         message:
           "Push notification process completed.",
         totalSubscriptions:
-          subscriptions.length,
+          subscriptions?.length || 0,
         sent,
         failed,
       },
