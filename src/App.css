@@ -1565,3 +1565,13 @@ footer p {
   color: #111;
   transform: translateY(-1px);
 }
+.social-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.social-links a {
+  text-decoration: none;
+}

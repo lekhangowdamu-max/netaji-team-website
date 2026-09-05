@@ -211,7 +211,7 @@ function AddMember() {
     }
 
     const websiteUrl =
-      window.location.origin
+  'https://netaji-team-website.vercel.app/'
 
     const whatsappMessage = `🙏 ನಮಸ್ಕಾರ ${createdMemberName || 'Member'},
 
@@ -232,7 +232,7 @@ ${loginCredentials.username}
 🔑 Temporary Password:
 ${loginCredentials.password}
 
-🌐 Login:
+🌐 Login to our official website:
 ${websiteUrl}
 
 ⚠️ IMPORTANT

@@ -164,13 +164,20 @@ async function checkAdmin() {
 
         <div className="contact-buttons">
           <a
-            href="https://www.youtube.com/@LekhanGowda-z5"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="youtube-btn"
-          >
-            YouTube Channel
-          </a>
+  href="https://www.youtube.com/@LekhanGowda-z5"
+  target="_blank"
+  rel="noreferrer"
+>
+  ▶️ YouTube
+</a>
+
+<a
+  href="https://www.instagram.com/netaji_bays?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=="
+  target="_blank"
+  rel="noreferrer"
+>
+  📸 Instagram
+</a>
         </div>
       </section>
 
