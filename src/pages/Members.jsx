@@ -30,6 +30,15 @@ function Members() {
       console.error('Error loading members:', error)
       setError(error.message)
     } else {
+      console.log('MEMBERS FROM DATABASE:', data)
+
+      data?.forEach((member) => {
+        console.log(
+          `MEMBER ${member.id} PHOTO:`,
+          member.profile_image
+        )
+      })
+
       setMembers(data || [])
       setError('')
     }
@@ -112,7 +121,6 @@ function Members() {
         throw error
       }
 
-      // Remove member from screen
       setMembers((currentMembers) =>
         currentMembers.filter(
           (item) => item.id !== member.id
@@ -139,6 +147,27 @@ function Members() {
   }
 
   // ==========================================
+  // IMAGE ERROR HANDLER
+  // ==========================================
+
+  function handleImageError(e, member) {
+    console.error(
+      'MEMBER PHOTO FAILED TO LOAD:',
+      member.profile_image
+    )
+
+    console.error(
+      'MEMBER:',
+      member.name,
+      'ID:',
+      member.id
+    )
+
+    // Show team logo if member photo cannot load
+    e.currentTarget.src = teamLogo
+  }
+
+  // ==========================================
   // LOADING
   // ==========================================
 
@@ -147,8 +176,15 @@ function Members() {
       <div className="members-page">
 
         <div className="members-header">
-          <h1>ನಮ್ಮ ತಂಡದ ಸದಸ್ಯರು</h1>
-          <p>Loading...</p>
+
+          <h1>
+            ನಮ್ಮ ತಂಡದ ಸದಸ್ಯರು
+          </h1>
+
+          <p>
+            Loading...
+          </p>
+
         </div>
 
       </div>
@@ -214,18 +250,26 @@ function Members() {
             key={member.id}
           >
 
+            {/* ================================= */}
             {/* MEMBER IMAGE */}
+            {/* ================================= */}
 
             <img
               src={
-                member.profile_image ||
-                teamLogo
+                member.profile_image
+                  ? member.profile_image
+                  : teamLogo
               }
               alt={member.name}
               className="member-profile-image"
+              onError={(e) =>
+                handleImageError(e, member)
+              }
             />
 
+            {/* ================================= */}
             {/* MEMBER INFORMATION */}
+            {/* ================================= */}
 
             <div className="member-info">
 
@@ -263,9 +307,7 @@ function Members() {
 
                 {member.whatsapp && (
                   <a
-                    href={
-                      `https://wa.me/91${member.whatsapp}`
-                    }
+                    href={`https://wa.me/91${member.whatsapp}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -306,26 +348,21 @@ function Members() {
 
                         border: 'none',
 
-                        padding:
-                          '8px 12px',
+                        padding: '8px 12px',
 
-                        borderRadius:
-                          '6px',
+                        borderRadius: '6px',
 
                         cursor:
                           deletingId === member.id
                             ? 'not-allowed'
                             : 'pointer',
 
-                        fontSize:
-                          '14px',
+                        fontSize: '14px',
 
-                        fontWeight:
-                          '600',
+                        fontWeight: '600',
                       }}
                     >
-                      {deletingId ===
-                      member.id
+                      {deletingId === member.id
                         ? 'Deleting...'
                         : '🗑️ Delete'}
                     </button>

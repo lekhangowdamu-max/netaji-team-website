@@ -61,36 +61,95 @@ function EditMember() {
     setLoginCredentials(null)
 
     try {
-      let profileImage = currentPhoto
+      // =========================================
+      // 1. Keep existing photo
+      // =========================================
 
-      // -----------------------------------------
-      // 1. Upload new photo if selected
-      // -----------------------------------------
+      let profileImage = currentPhoto || null
+
+      console.log('OLD PROFILE IMAGE:', profileImage)
+
+      // =========================================
+      // 2. Upload new photo
+      // =========================================
 
       if (photo) {
-        const fileExt = photo.name.split('.').pop()
-        const fileName = `${Date.now()}.${fileExt}`
+        const fileExt =
+          photo.name.split('.').pop().toLowerCase()
 
-        const { error: uploadError } = await supabase.storage
-          .from('member-photos')
-          .upload(fileName, photo)
+        const fileName =
+          `member-${id}-${Date.now()}.${fileExt}`
+
+        console.log('UPLOADING PHOTO:', fileName)
+
+        const { error: uploadError } =
+          await supabase.storage
+            .from('member-photos')
+            .upload(fileName, photo, {
+              cacheControl: '3600',
+              upsert: false,
+            })
 
         if (uploadError) {
+          console.error(
+            'PHOTO UPLOAD ERROR:',
+            uploadError
+          )
+
           throw uploadError
         }
 
-        const { data } = supabase.storage
-          .from('member-photos')
-          .getPublicUrl(fileName)
+        console.log(
+          'PHOTO UPLOAD SUCCESS:',
+          fileName
+        )
 
-        profileImage = data.publicUrl
+        // =========================================
+        // 3. Get public URL
+        // =========================================
+
+        const { data: publicUrlData } =
+          supabase.storage
+            .from('member-photos')
+            .getPublicUrl(fileName)
+
+        if (!publicUrlData?.publicUrl) {
+          throw new Error(
+            'Photo uploaded, but public URL could not be generated.'
+          )
+        }
+
+        profileImage =
+          publicUrlData.publicUrl
+
+        console.log(
+          'NEW PROFILE IMAGE URL:',
+          profileImage
+        )
       }
 
-      // -----------------------------------------
-      // 2. Update member information
-      // -----------------------------------------
+      // =========================================
+      // 4. IMPORTANT DEBUG
+      // =========================================
 
-      const { error: updateError } = await supabase
+      console.log(
+        'PROFILE IMAGE BEFORE DATABASE UPDATE:',
+        profileImage
+      )
+
+      console.log(
+        'MEMBER ID:',
+        id
+      )
+
+      // =========================================
+      // 5. Update member database
+      // =========================================
+
+      const {
+        data: updatedMember,
+        error: updateError,
+      } = await supabase
         .from('members')
         .update({
           name,
@@ -101,16 +160,58 @@ function EditMember() {
           profile_image: profileImage,
         })
         .eq('id', id)
+        .select('id, profile_image')
+        .single()
+
+      // =========================================
+      // 6. Check database update
+      // =========================================
 
       if (updateError) {
+        console.error(
+          'DATABASE UPDATE ERROR:',
+          updateError
+        )
+
         throw updateError
       }
 
-      // -----------------------------------------
-      // 3. If account already exists
-      // -----------------------------------------
+      console.log(
+        'UPDATED MEMBER FROM DATABASE:',
+        updatedMember
+      )
+
+      console.log(
+        'SAVED PROFILE IMAGE:',
+        updatedMember?.profile_image
+      )
+
+      // =========================================
+      // 7. Make sure photo was actually saved
+      // =========================================
+
+      if (
+        profileImage &&
+        !updatedMember?.profile_image
+      ) {
+        throw new Error(
+          'Photo URL was not saved in the members table.'
+        )
+      }
+
+      // =========================================
+      // 8. Account already exists
+      // =========================================
 
       if (memberUserId) {
+        setCurrentPhoto(
+          updatedMember?.profile_image ||
+          profileImage ||
+          ''
+        )
+
+        setPhoto(null)
+
         setMessage(
           'Member updated successfully! ✅'
         )
@@ -119,24 +220,27 @@ function EditMember() {
         return
       }
 
-      // -----------------------------------------
-      // 4. Get current admin
-      // -----------------------------------------
+      // =========================================
+      // 9. Get current admin
+      // =========================================
 
       const {
         data: userData,
         error: userError,
       } = await supabase.auth.getUser()
 
-      if (userError || !userData.user) {
+      if (
+        userError ||
+        !userData.user
+      ) {
         throw new Error(
           'Admin login session not found.'
         )
       }
 
-      // -----------------------------------------
-      // 5. Create member login account
-      // -----------------------------------------
+      // =========================================
+      // 10. Create member account
+      // =========================================
 
       const {
         data: accountData,
@@ -154,7 +258,7 @@ function EditMember() {
 
       if (functionError) {
         console.error(
-          'Edge Function error:',
+          'EDGE FUNCTION ERROR:',
           functionError
         )
 
@@ -167,7 +271,7 @@ function EditMember() {
               await functionError.context.json()
 
             console.error(
-              'Edge Function response:',
+              'EDGE FUNCTION RESPONSE:',
               errorBody
             )
 
@@ -191,40 +295,53 @@ function EditMember() {
         )
       }
 
-      // -----------------------------------------
-      // 6. Store generated credentials
-      // -----------------------------------------
+      // =========================================
+      // 11. Store credentials
+      // =========================================
 
       setLoginCredentials({
-        username: accountData.username,
-        password: accountData.temporaryPassword,
+        username:
+          accountData.username,
+
+        password:
+          accountData.temporaryPassword,
       })
+
+      setCurrentPhoto(
+        updatedMember?.profile_image ||
+        profileImage ||
+        ''
+      )
+
+      setPhoto(null)
 
       setMessage(
         'Member updated successfully! 🎉 Login account created.'
       )
 
-      // Refresh member data
+      // Refresh data
       await fetchMember()
 
     } catch (error) {
       console.error(
-        'Update member error:',
+        'UPDATE MEMBER ERROR:',
         error
       )
 
-      setMessage(error.message)
+      setMessage(
+        error.message ||
+        'Unable to update member.'
+      )
     }
 
     setSaving(false)
   }
 
-  // -----------------------------------------
+  // =========================================
   // WhatsApp
-  // -----------------------------------------
+  // =========================================
 
   function sendCredentialsOnWhatsApp() {
-    // ONLY use registered WhatsApp number
     if (!whatsapp) {
       alert(
         'This member does not have a registered WhatsApp number.'
@@ -242,12 +359,11 @@ function EditMember() {
     let cleanNumber =
       whatsapp.replace(/\D/g, '')
 
-    // Indian 10-digit number
     if (cleanNumber.length === 10) {
-      cleanNumber = '91' + cleanNumber
+      cleanNumber =
+        '91' + cleanNumber
     }
 
-    // If user entered 091XXXXXXXXXX
     if (
       cleanNumber.length === 13 &&
       cleanNumber.startsWith('091')
@@ -257,7 +373,7 @@ function EditMember() {
     }
 
     const websiteUrl =
-      window.location.origin
+      'https://netaji-team-website.vercel.app/'
 
     const whatsappMessage = `🙏 ನಮಸ್ಕಾರ ${name},
 
@@ -305,13 +421,14 @@ https://cdn.corenexis.com/f/Q4tlN92ScN0.jpg
     )
   }
 
-  // -----------------------------------------
+  // =========================================
   // Loading
-  // -----------------------------------------
+  // =========================================
 
   if (loading) {
     return (
       <div className="about-section">
+
         <p className="section-label">
           ADMIN
         </p>
@@ -319,13 +436,14 @@ https://cdn.corenexis.com/f/Q4tlN92ScN0.jpg
         <h2>
           Loading member...
         </h2>
+
       </div>
     )
   }
 
-  // -----------------------------------------
+  // =========================================
   // Page
-  // -----------------------------------------
+  // =========================================
 
   return (
     <div className="about-section">
@@ -337,6 +455,8 @@ https://cdn.corenexis.com/f/Q4tlN92ScN0.jpg
       <h2>
         Edit Member
       </h2>
+
+      {/* Current Profile Photo */}
 
       {currentPhoto && (
         <img
@@ -421,7 +541,9 @@ https://cdn.corenexis.com/f/Q4tlN92ScN0.jpg
           type="file"
           accept="image/*"
           onChange={(e) =>
-            setPhoto(e.target.files[0])
+            setPhoto(
+              e.target.files?.[0] || null
+            )
           }
         />
 
