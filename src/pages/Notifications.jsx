@@ -7,10 +7,6 @@ function Notifications() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    loadNotifications()
-  }, [])
-
   async function loadNotifications() {
     setLoading(true)
     setError('')
@@ -24,12 +20,12 @@ function Notifications() {
 
     if (error) {
       console.error(
-        'NOTIFICATIONS ERROR:',
+        'NOTIFICATION HISTORY ERROR:',
         error
       )
 
       setError(
-        'Unable to load notifications.'
+        'Unable to load notification history.'
       )
 
       setLoading(false)
@@ -40,125 +36,194 @@ function Notifications() {
     setLoading(false)
   }
 
-  function formatDate(dateString) {
-    return new Date(
-      dateString
-    ).toLocaleString('en-IN', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    })
+  useEffect(() => {
+    loadNotifications()
+  }, [])
+
+  function formatDate(date) {
+    return new Date(date).toLocaleString(
+      'en-IN',
+      {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }
+    )
   }
 
   return (
-    <div className="notifications-page">
+    <div className="admin-dashboard">
 
-      <div className="notifications-header">
+      <div className="admin-header">
+        <div>
+          <p className="section-label">
+            NOTIFICATION HISTORY
+          </p>
 
-        <Link
-          to="/"
-          className="back-home-btn"
-        >
-          ← Home
-        </Link>
+          <h1>📢 Notifications</h1>
 
-        <h1>
-          🔔 Notifications
-        </h1>
+          <p>
+            ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ
+          </p>
+        </div>
 
-        <p>
-          Important updates from
-          ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ
-        </p>
-
+        <div className="admin-header-actions">
+          <Link
+            to="/admin"
+            className="refresh-btn"
+          >
+            ← Dashboard
+          </Link>
+        </div>
       </div>
 
-      {loading && (
-        <div className="notifications-status">
-          Loading notifications...
-        </div>
-      )}
+      <div className="admin-section">
 
-      {error && (
-        <div className="notifications-error">
-          {error}
-        </div>
-      )}
+        <p className="section-label">
+          RECENT UPDATES
+        </p>
 
-      {!loading &&
-        !error &&
-        notifications.length === 0 && (
-          <div className="notifications-empty">
-            <div className="empty-icon">
-              🔔
+        <h2>Notification History</h2>
+
+        <p
+          style={{
+            color: '#aaa',
+            marginBottom: '30px',
+          }}
+        >
+          Notifications are automatically removed
+          after 48 hours.
+        </p>
+
+        {loading && (
+          <p style={{ color: '#aaa' }}>
+            Loading notifications...
+          </p>
+        )}
+
+        {error && (
+          <div
+            style={{
+              padding: '15px',
+              borderRadius: '8px',
+              background:
+                'rgba(255,70,70,0.1)',
+              color: '#ff6b6b',
+              marginBottom: '20px',
+            }}
+          >
+            ⚠️ {error}
+          </div>
+        )}
+
+        {!loading &&
+          notifications.length === 0 && (
+            <div
+              style={{
+                padding: '30px',
+                textAlign: 'center',
+                color: '#888',
+                border: '1px solid #333',
+                borderRadius: '10px',
+              }}
+            >
+              📭 No notifications yet.
             </div>
+          )}
 
-            <h2>
-              No notifications yet
-            </h2>
+        <div
+          style={{
+            display: 'grid',
+            gap: '20px',
+          }}
+        >
+          {notifications.map(
+            (notification) => (
+              <div
+                key={notification.id}
+                style={{
+                  padding: '20px',
+                  borderRadius: '12px',
+                  background: '#111',
+                  border: '1px solid #333',
+                }}
+              >
 
-            <p>
-              New team announcements
-              will appear here.
-            </p>
-          </div>
-        )}
-
-      {!loading &&
-        !error &&
-        notifications.length > 0 && (
-
-          <div className="notifications-list">
-
-            {notifications.map(
-              (notification) => (
-
-                <div
-                  className="notification-card"
-                  key={notification.id}
+                <h3
+                  style={{
+                    marginTop: 0,
+                    marginBottom: '10px',
+                    color: '#fff',
+                  }}
                 >
+                  📢 {notification.title}
+                </h3>
 
-                  <div className="notification-icon">
-                    📢
+                <p
+                  style={{
+                    color: '#ccc',
+                    lineHeight: '1.6',
+                    whiteSpace: 'pre-wrap',
+                  }}
+                >
+                  {notification.message}
+                </p>
+
+                {notification.image_url && (
+                  <div
+                    style={{
+                      marginTop: '15px',
+                      marginBottom: '15px',
+                    }}
+                  >
+                    <img
+                      src={notification.image_url}
+                      alt={notification.title}
+                      style={{
+                        width: '100%',
+                        maxWidth: '600px',
+                        maxHeight: '400px',
+                        objectFit: 'contain',
+                        display: 'block',
+                        borderRadius: '10px',
+                        background: '#000',
+                      }}
+                    />
                   </div>
+                )}
 
-                  <div className="notification-content">
+                <p
+                  style={{
+                    color: '#777',
+                    fontSize: '13px',
+                    marginBottom: 0,
+                  }}
+                >
+                  🕒{' '}
+                  {formatDate(
+                    notification.created_at
+                  )}
+                </p>
 
-                    <h2>
-                      {notification.title}
-                    </h2>
+                {notification.url &&
+                  notification.url !== '/' && (
+                    <Link
+                      to={notification.url}
+                      className="secondary-btn"
+                      style={{
+                        display: 'inline-block',
+                        marginTop: '15px',
+                      }}
+                    >
+                      Open →
+                    </Link>
+                  )}
 
-                    <p>
-                      {notification.message}
-                    </p>
+              </div>
+            )
+          )}
+        </div>
 
-                    <span className="notification-date">
-                      {formatDate(
-                        notification.created_at
-                      )}
-                    </span>
-
-                    {notification.url &&
-                      notification.url !== '/' && (
-
-                        <Link
-                          to={notification.url}
-                          className="notification-open-btn"
-                        >
-                          Open →
-                        </Link>
-
-                      )}
-
-                  </div>
-
-                </div>
-
-              )
-            )}
-
-          </div>
-
-        )}
+      </div>
 
     </div>
   )

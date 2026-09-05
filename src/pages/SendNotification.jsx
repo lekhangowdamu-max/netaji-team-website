@@ -11,9 +11,58 @@ function SendNotification() {
 
   const [message, setMessage] = useState('')
   const [url, setUrl] = useState('/')
+
+  const [imageFile, setImageFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState('')
+
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
+
+  // --------------------------------------------------
+  // PHOTO SELECTION
+  // --------------------------------------------------
+
+  function handleImageChange(e) {
+    const file = e.target.files?.[0]
+
+    if (!file) {
+      return
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      setError('Please select a valid image file.')
+      return
+    }
+
+    // Maximum 5 MB
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image size must be less than 5 MB.')
+      return
+    }
+
+    setImageFile(file)
+    setImagePreview(URL.createObjectURL(file))
+    setError('')
+  }
+
+  // --------------------------------------------------
+  // REMOVE PHOTO
+  // --------------------------------------------------
+
+  function removeImage() {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview)
+    }
+
+    setImageFile(null)
+    setImagePreview('')
+  }
+
+  // --------------------------------------------------
+  // SEND NOTIFICATION
+  // --------------------------------------------------
 
   async function handleSend(e) {
     e.preventDefault()
@@ -28,19 +77,28 @@ function SendNotification() {
     setResult(null)
 
     try {
-      // Get current logged-in user/session
+      // --------------------------------------------------
+      // GET CURRENT SESSION
+      // --------------------------------------------------
+
       const {
         data: { session },
         error: sessionError,
       } = await supabase.auth.getSession()
 
       if (sessionError || !session) {
-        setError('Your login session has expired. Please login again.')
+        setError(
+          'Your login session has expired. Please login again.'
+        )
+
         setLoading(false)
         return
       }
 
-      // Verify admin before calling the function
+      // --------------------------------------------------
+      // VERIFY ADMIN
+      // --------------------------------------------------
+
       const { data: admin, error: adminError } =
         await supabase
           .from('admins')
@@ -53,34 +111,99 @@ function SendNotification() {
       }
 
       if (!admin) {
-        setError('Only the admin can send notifications.')
+        setError(
+          'Only the admin can send notifications.'
+        )
+
         setLoading(false)
         return
       }
+
+      // --------------------------------------------------
+      // GET USER
+      // --------------------------------------------------
+
       const {
-  data: { user },
-} = await supabase.auth.getUser()
+        data: { user },
+      } = await supabase.auth.getUser()
 
-if (!user) {
-  throw new Error(
-    'You must be logged in.'
-  )
-}
-const { error: saveError } =
-  await supabase
-    .from('notifications')
-    .insert({
-      title,
-      message,
-      url,
-      created_by: user.id,
-    })
+      if (!user) {
+        throw new Error('You must be logged in.')
+      }
 
-if (saveError) {
-  throw saveError
-}
+      // --------------------------------------------------
+      // UPLOAD IMAGE
+      // --------------------------------------------------
 
-      // Call secure Edge Function
+      let imageUrl = null
+
+      if (imageFile) {
+        const fileExtension =
+          imageFile.name.split('.').pop()?.toLowerCase() || 'jpg'
+
+        const fileName =
+          `notification-${Date.now()}-${Math.random()
+            .toString(36)
+            .substring(2, 8)}.${fileExtension}`
+
+        const { error: uploadError } =
+          await supabase.storage
+            .from('notification-images')
+            .upload(fileName, imageFile, {
+              cacheControl: '3600',
+              upsert: false,
+              contentType: imageFile.type,
+            })
+
+        if (uploadError) {
+          console.error(
+            'IMAGE UPLOAD ERROR:',
+            uploadError
+          )
+
+          throw new Error(
+            'Unable to upload the notification photo.'
+          )
+        }
+
+        // Get public URL
+        const { data: publicUrlData } =
+          supabase.storage
+            .from('notification-images')
+            .getPublicUrl(fileName)
+
+        imageUrl =
+          publicUrlData?.publicUrl || null
+      }
+
+      // --------------------------------------------------
+      // SAVE NOTIFICATION HISTORY
+      // --------------------------------------------------
+
+      const { error: saveError } =
+        await supabase
+          .from('notifications')
+          .insert({
+            title: title.trim(),
+            message: message.trim(),
+            url: url || '/',
+            image_url: imageUrl,
+            created_by: user.id,
+          })
+
+      if (saveError) {
+        console.error(
+          'SAVE NOTIFICATION ERROR:',
+          saveError
+        )
+
+        throw saveError
+      }
+
+      // --------------------------------------------------
+      // SEND PUSH NOTIFICATION
+      // --------------------------------------------------
+
       const { data, error: functionError } =
         await supabase.functions.invoke(
           'send-push-notification',
@@ -89,6 +212,7 @@ if (saveError) {
               title: title.trim(),
               body: message.trim(),
               url: url || '/',
+              image: imageUrl,
             },
           }
         )
@@ -109,9 +233,15 @@ if (saveError) {
         throw new Error(data.error)
       }
 
+      // --------------------------------------------------
+      // SUCCESS
+      // --------------------------------------------------
+
       setResult(data)
 
       setMessage('')
+
+      removeImage()
 
     } catch (error) {
       console.error(
@@ -120,7 +250,7 @@ if (saveError) {
       )
 
       setError(
-        error.message ||
+        error?.message ||
         'Unable to send notification.'
       )
     }
@@ -128,10 +258,14 @@ if (saveError) {
     setLoading(false)
   }
 
+  // --------------------------------------------------
+  // UI
+  // --------------------------------------------------
+
   return (
     <div className="admin-dashboard">
 
-      {/* Header */}
+      {/* HEADER */}
 
       <div className="admin-header">
 
@@ -142,7 +276,7 @@ if (saveError) {
           </p>
 
           <h1>
-            🔔 Send Notification
+            📢✨ Send Notification
           </h1>
 
           <p>
@@ -165,7 +299,7 @@ if (saveError) {
       </div>
 
 
-      {/* Notification Form */}
+      {/* NOTIFICATION FORM */}
 
       <div className="admin-section">
 
@@ -177,7 +311,12 @@ if (saveError) {
           Notify Team Members
         </h2>
 
-        <p style={{ color: '#aaa', marginBottom: '30px' }}>
+        <p
+          style={{
+            color: '#aaa',
+            marginBottom: '30px',
+          }}
+        >
           Send an instant notification to members who
           have enabled notifications.
         </p>
@@ -188,7 +327,7 @@ if (saveError) {
           className="login-form"
         >
 
-          {/* Title */}
+          {/* TITLE */}
 
           <label>
             Notification Title
@@ -205,7 +344,7 @@ if (saveError) {
           />
 
 
-          {/* Message */}
+          {/* MESSAGE */}
 
           <label>
             Message
@@ -233,7 +372,107 @@ if (saveError) {
           />
 
 
-          {/* URL */}
+          {/* PHOTO ATTACHMENT */}
+
+          <label>
+            📷 Attach Photo
+          </label>
+
+          <div
+            style={{
+              border: '1px dashed #555',
+              borderRadius: '10px',
+              padding: '20px',
+              background: '#111',
+              marginBottom: '10px',
+            }}
+          >
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{
+                width: '100%',
+                color: '#fff',
+                fontSize: '15px',
+              }}
+            />
+
+            <p
+              style={{
+                color: '#777',
+                fontSize: '13px',
+                marginTop: '10px',
+                marginBottom: 0,
+              }}
+            >
+              JPG, PNG, WEBP and other image formats.
+              Maximum size: 5 MB.
+            </p>
+
+          </div>
+
+
+          {/* PHOTO PREVIEW */}
+
+          {imagePreview && (
+            <div
+              style={{
+                marginTop: '15px',
+                marginBottom: '20px',
+                padding: '15px',
+                borderRadius: '10px',
+                background: '#151515',
+                border: '1px solid #333',
+              }}
+            >
+
+              <p
+                style={{
+                  color: '#aaa',
+                  marginTop: 0,
+                  marginBottom: '10px',
+                }}
+              >
+                🖼️ Selected Photo
+              </p>
+
+              <img
+                src={imagePreview}
+                alt="Notification preview"
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  maxWidth: '500px',
+                  maxHeight: '350px',
+                  objectFit: 'contain',
+                  borderRadius: '8px',
+                  background: '#000',
+                  marginBottom: '15px',
+                }}
+              />
+
+              <button
+                type="button"
+                onClick={removeImage}
+                style={{
+                  padding: '10px 16px',
+                  borderRadius: '7px',
+                  border: '1px solid #555',
+                  background: '#222',
+                  color: '#fff',
+                  cursor: 'pointer',
+                }}
+              >
+                ❌ Remove Photo
+              </button>
+
+            </div>
+          )}
+
+
+          {/* OPEN URL */}
 
           <label>
             Open Page After Clicking
@@ -254,6 +493,7 @@ if (saveError) {
               fontSize: '16px',
             }}
           >
+
             <option value="/">
               Home
             </option>
@@ -265,10 +505,11 @@ if (saveError) {
             <option value="/gallery">
               Gallery
             </option>
+
           </select>
 
 
-          {/* Error */}
+          {/* ERROR */}
 
           {error && (
             <div
@@ -276,7 +517,8 @@ if (saveError) {
                 marginTop: '20px',
                 padding: '14px',
                 borderRadius: '8px',
-                background: 'rgba(255, 70, 70, 0.1)',
+                background:
+                  'rgba(255, 70, 70, 0.1)',
                 color: '#ff6b6b',
               }}
             >
@@ -285,7 +527,7 @@ if (saveError) {
           )}
 
 
-          {/* Success */}
+          {/* SUCCESS */}
 
           {result && (
             <div
@@ -293,10 +535,12 @@ if (saveError) {
                 marginTop: '20px',
                 padding: '18px',
                 borderRadius: '8px',
-                background: 'rgba(50, 200, 100, 0.1)',
+                background:
+                  'rgba(50, 200, 100, 0.1)',
                 color: '#7ee787',
               }}
             >
+
               <strong>
                 ✅ Notification sent successfully!
               </strong>
@@ -312,11 +556,12 @@ if (saveError) {
               <p>
                 Failed: {result.failed}
               </p>
+
             </div>
           )}
 
 
-          {/* Send */}
+          {/* SEND BUTTON */}
 
           <button
             type="submit"
@@ -325,7 +570,7 @@ if (saveError) {
           >
             {loading
               ? 'Sending...'
-              : '🔔 Send Notification'}
+              : '📢✨ Send Notification'}
           </button>
 
         </form>
@@ -333,7 +578,7 @@ if (saveError) {
       </div>
 
 
-      {/* Information */}
+      {/* INFORMATION */}
 
       <div className="admin-section">
 
@@ -348,6 +593,12 @@ if (saveError) {
         <p style={{ color: '#aaa' }}>
           Only members who have logged in and enabled
           browser notifications can receive notifications.
+        </p>
+
+        <p style={{ color: '#aaa' }}>
+          You can now attach a photo to your notification.
+          The photo is uploaded securely to Supabase Storage
+          and saved with the notification history.
         </p>
 
         <p style={{ color: '#aaa' }}>
