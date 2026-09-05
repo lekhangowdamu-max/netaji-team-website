@@ -50,7 +50,7 @@ async function checkAdmin() {
       {/* Navigation */}
       <nav className="navbar">
         <div className="nav-logo">
-          ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ
+          ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ (ರಿ)
         </div>
 
         <div className="nav-links">
@@ -64,7 +64,7 @@ async function checkAdmin() {
   </Link>
 
   <button onClick={handleLogout} className="login-btn">
-    Logout
+    Login
   </button>
 </div>
       </nav>
@@ -76,9 +76,8 @@ async function checkAdmin() {
           <p className="small-title">ಮರಳಿಗ</p>
 
           <h1>
-            ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್
-            <br />
-            ಯುವಕರ ಸಂಘ
+            ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ 
+            ಯುವಕರ ಸಂಘ(ರಿ).
           </h1>
 
           <p className="hero-description">
@@ -140,18 +139,7 @@ async function checkAdmin() {
         </Link>
       </section>
 
-      {/* Gallery */}
-      <section id="gallery" className="gallery-section">
-        <p className="section-label">GALLERY</p>
-
-        <h2>ಗಣೇಶೋತ್ಸವ ಫೋಟೋ ಗ್ಯಾಲರಿ</h2>
-
-        <div className="gallery-placeholder">
-          <p>
-            ಗಣೇಶೋತ್ಸವದ ಫೋಟೋಗಳು ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತವೆ.
-          </p>
-        </div>
-      </section>
+      
 
       {/* Contact */}
       <section id="contact" className="contact-section">
