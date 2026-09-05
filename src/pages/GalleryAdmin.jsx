@@ -7,6 +7,9 @@ function GalleryAdmin() {
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [galleryYear, setGalleryYear] = useState(
+    new Date().getFullYear()
+  )
   const [photo, setPhoto] = useState(null)
 
   const [photos, setPhotos] = useState([])
@@ -15,6 +18,22 @@ function GalleryAdmin() {
   const [message, setMessage] = useState('')
 
   const [editingId, setEditingId] = useState(null)
+
+  // ==========================================
+  // GENERATE YEARS
+  // 2015 -> CURRENT YEAR
+  // ==========================================
+
+  const currentYear = new Date().getFullYear()
+
+  const years = Array.from(
+    { length: currentYear - 2015 + 1 },
+    (_, index) => 2015 + index
+  ).reverse()
+
+  // ==========================================
+  // LOAD GALLERY
+  // ==========================================
 
   useEffect(() => {
     fetchPhotos()
@@ -26,10 +45,19 @@ function GalleryAdmin() {
     const { data, error } = await supabase
       .from('gallery')
       .select('*')
-      .order('created_at', { ascending: false })
+      .order('gallery_year', {
+        ascending: false,
+      })
+      .order('created_at', {
+        ascending: false,
+      })
 
     if (error) {
-      console.error(error)
+      console.error(
+        'Gallery loading error:',
+        error
+      )
+
       setMessage(error.message)
     } else {
       setPhotos(data || [])
@@ -38,15 +66,38 @@ function GalleryAdmin() {
     setLoadingPhotos(false)
   }
 
-  // =========================
-  // UPLOAD PHOTO
-  // =========================
+  // ==========================================
+  // MEDIA TYPE
+  // ==========================================
+
+  function getMediaType(file) {
+    if (!file) {
+      return 'image'
+    }
+
+    return file.type.startsWith('video/')
+      ? 'video'
+      : 'image'
+  }
+
+  // ==========================================
+  // UPLOAD MEDIA
+  // ==========================================
 
   async function handleUpload(e) {
     e.preventDefault()
 
     if (!photo) {
-      setMessage('Please select a photo.')
+      setMessage(
+        'Please select an image or video.'
+      )
+      return
+    }
+
+    if (!galleryYear) {
+      setMessage(
+        'Please select a year.'
+      )
       return
     }
 
@@ -54,53 +105,102 @@ function GalleryAdmin() {
     setMessage('')
 
     try {
-      const { data: userData, error: userError } =
-        await supabase.auth.getUser()
+      // CHECK LOGIN
+      const {
+        data: userData,
+        error: userError,
+      } = await supabase.auth.getUser()
 
       if (userError || !userData.user) {
-        throw new Error('Please login as admin first.')
+        throw new Error(
+          'Please login as admin first.'
+        )
       }
 
-      const fileExt = photo.name.split('.').pop()
+      // DETECT MEDIA TYPE
+      const mediaType = getMediaType(photo)
 
-      const fileName = `${Date.now()}-${Math.random()
-        .toString(36)
-        .substring(2)}.${fileExt}`
+      // FILE EXTENSION
+      const fileExt =
+        photo.name
+          .split('.')
+          .pop()
+          ?.toLowerCase() || 'file'
 
-      const { error: uploadError } = await supabase.storage
+      // UNIQUE FILE NAME
+      const fileName =
+        `${Date.now()}-${Math.random()
+          .toString(36)
+          .substring(2)}.${fileExt}`
+
+      // UPLOAD TO STORAGE
+      const {
+        error: uploadError,
+      } = await supabase.storage
         .from('gallery-photos')
-        .upload(fileName, photo)
+        .upload(fileName, photo, {
+          contentType: photo.type,
+          upsert: false,
+        })
 
       if (uploadError) {
         throw uploadError
       }
 
-      const { data: urlData } = supabase.storage
+      // PUBLIC URL
+      const {
+        data: urlData,
+      } = supabase.storage
         .from('gallery-photos')
         .getPublicUrl(fileName)
 
-      const { error: insertError } = await supabase
+      if (!urlData?.publicUrl) {
+        throw new Error(
+          'Unable to create media URL.'
+        )
+      }
+
+      // SAVE DATABASE
+      const {
+        error: insertError,
+      } = await supabase
         .from('gallery')
         .insert({
           image_url: urlData.publicUrl,
           title,
           description,
           uploaded_by: userData.user.id,
+          media_type: mediaType,
+          gallery_year: Number(galleryYear),
         })
 
       if (insertError) {
+        // Remove uploaded file
+        await supabase.storage
+          .from('gallery-photos')
+          .remove([fileName])
+
         throw insertError
       }
 
-      setMessage('Photo uploaded successfully! 🎉')
+      setMessage(
+        mediaType === 'video'
+          ? `Video added to ${galleryYear} gallery successfully! 🎉`
+          : `Photo added to ${galleryYear} gallery successfully! 🎉`
+      )
 
+      // RESET
       setTitle('')
       setDescription('')
+      setGalleryYear(
+        new Date().getFullYear()
+      )
       setPhoto(null)
 
-      const input = document.getElementById(
-        'gallery-photo-input'
-      )
+      const input =
+        document.getElementById(
+          'gallery-photo-input'
+        )
 
       if (input) {
         input.value = ''
@@ -109,22 +209,49 @@ function GalleryAdmin() {
       fetchPhotos()
 
     } catch (error) {
-      console.error(error)
+      console.error(
+        'Upload error:',
+        error
+      )
+
       setMessage(error.message)
     }
 
     setLoading(false)
   }
 
-  // =========================
-  // START EDITING
-  // =========================
+  // ==========================================
+  // START EDIT
+  // ==========================================
 
-  function startEdit(photoItem) {
-    setEditingId(photoItem.id)
-    setTitle(photoItem.title || '')
-    setDescription(photoItem.description || '')
+  function startEdit(mediaItem) {
+    setEditingId(mediaItem.id)
+
+    setTitle(
+      mediaItem.title || ''
+    )
+
+    setDescription(
+      mediaItem.description || ''
+    )
+
+    setGalleryYear(
+      mediaItem.gallery_year ||
+      new Date().getFullYear()
+    )
+
     setPhoto(null)
+
+    const input =
+      document.getElementById(
+        'gallery-photo-input'
+      )
+
+    if (input) {
+      input.value = ''
+    }
+
+    setMessage('')
 
     window.scrollTo({
       top: 0,
@@ -132,19 +259,24 @@ function GalleryAdmin() {
     })
   }
 
-  // =========================
+  // ==========================================
   // CANCEL EDIT
-  // =========================
+  // ==========================================
 
   function cancelEdit() {
     setEditingId(null)
+
     setTitle('')
     setDescription('')
+    setGalleryYear(
+      new Date().getFullYear()
+    )
     setPhoto(null)
 
-    const input = document.getElementById(
-      'gallery-photo-input'
-    )
+    const input =
+      document.getElementById(
+        'gallery-photo-input'
+      )
 
     if (input) {
       input.value = ''
@@ -153,9 +285,9 @@ function GalleryAdmin() {
     setMessage('')
   }
 
-  // =========================
-  // UPDATE PHOTO
-  // =========================
+  // ==========================================
+  // UPDATE MEDIA
+  // ==========================================
 
   async function handleUpdate(e) {
     e.preventDefault()
@@ -164,146 +296,324 @@ function GalleryAdmin() {
     setMessage('')
 
     try {
-      const currentPhoto = photos.find(
-        (item) => item.id === editingId
-      )
+      const currentMedia =
+        photos.find(
+          (item) =>
+            item.id === editingId
+        )
 
-      if (!currentPhoto) {
-        throw new Error('Photo not found.')
+      if (!currentMedia) {
+        throw new Error(
+          'Media not found.'
+        )
       }
 
-      let imageUrl = currentPhoto.image_url
+      let mediaUrl =
+        currentMedia.image_url
 
-      // If new photo selected, upload it
+      let mediaType =
+        currentMedia.media_type ||
+        'image'
+
+      // ========================================
+      // REPLACE FILE IF SELECTED
+      // ========================================
+
       if (photo) {
-        const fileExt = photo.name.split('.').pop()
+        mediaType =
+          getMediaType(photo)
 
-        const fileName = `${Date.now()}-${Math.random()
-          .toString(36)
-          .substring(2)}.${fileExt}`
+        const fileExt =
+          photo.name
+            .split('.')
+            .pop()
+            ?.toLowerCase() ||
+          'file'
 
-        const { error: uploadError } =
-          await supabase.storage
-            .from('gallery-photos')
-            .upload(fileName, photo)
+        const fileName =
+          `${Date.now()}-${Math.random()
+            .toString(36)
+            .substring(2)}.${fileExt}`
+
+        const {
+          error: uploadError,
+        } = await supabase.storage
+          .from('gallery-photos')
+          .upload(
+            fileName,
+            photo,
+            {
+              contentType:
+                photo.type,
+              upsert: false,
+            }
+          )
 
         if (uploadError) {
           throw uploadError
         }
 
-        const { data: urlData } =
-          supabase.storage
-            .from('gallery-photos')
-            .getPublicUrl(fileName)
+        const {
+          data: urlData,
+        } = supabase.storage
+          .from('gallery-photos')
+          .getPublicUrl(
+            fileName
+          )
 
-        imageUrl = urlData.publicUrl
+        mediaUrl =
+          urlData.publicUrl
 
-        // Delete old image
+        // DELETE OLD FILE
         const oldFileName =
-          currentPhoto.image_url.split(
+          currentMedia.image_url.split(
             '/gallery-photos/'
           )[1]
 
         if (oldFileName) {
           await supabase.storage
-            .from('gallery-photos')
-            .remove([oldFileName])
+            .from(
+              'gallery-photos'
+            )
+            .remove([
+              oldFileName,
+            ])
         }
       }
 
-      // Update database
-      const { error: updateError } =
-        await supabase
-          .from('gallery')
-          .update({
-            title,
-            description,
-            image_url: imageUrl,
-          })
-          .eq('id', editingId)
+      // ========================================
+      // UPDATE DATABASE
+      // ========================================
+
+      const {
+        error: updateError,
+      } = await supabase
+        .from('gallery')
+        .update({
+          title,
+          description,
+          image_url: mediaUrl,
+          media_type: mediaType,
+          gallery_year:
+            Number(galleryYear),
+        })
+        .eq(
+          'id',
+          editingId
+        )
 
       if (updateError) {
         throw updateError
       }
 
       setMessage(
-        'Photo updated successfully! ✅'
+        `Gallery media moved to ${galleryYear} successfully! ✅`
       )
 
-      setEditingId(null)
-      setTitle('')
-      setDescription('')
-      setPhoto(null)
-
-      const input = document.getElementById(
-        'gallery-photo-input'
-      )
-
-      if (input) {
-        input.value = ''
-      }
+      cancelEdit()
 
       fetchPhotos()
 
     } catch (error) {
-      console.error(error)
-      setMessage(error.message)
+      console.error(
+        'Update error:',
+        error
+      )
+
+      setMessage(
+        error.message
+      )
     }
 
     setLoading(false)
   }
 
-  // =========================
-  // DELETE PHOTO
-  // =========================
+  // ==========================================
+  // DELETE MEDIA
+  // ==========================================
 
-  async function handleDelete(photoItem) {
-    const confirmed = window.confirm(
-      `Delete "${photoItem.title || 'this photo'}"?`
-    )
+  async function handleDelete(
+    mediaItem
+  ) {
+    const confirmed =
+      window.confirm(
+        `Delete "${mediaItem.title || 'this media'}"?`
+      )
 
     if (!confirmed) {
       return
     }
 
     try {
+      setMessage(
+        'Deleting...'
+      )
+
       const fileName =
-        photoItem.image_url.split(
+        mediaItem.image_url.split(
           '/gallery-photos/'
         )[1]
 
+      // DELETE STORAGE FILE
       if (fileName) {
-        const { error: storageError } =
-          await supabase.storage
-            .from('gallery-photos')
-            .remove([fileName])
-
-        if (storageError) {
-          console.error(storageError)
-        }
+        await supabase.storage
+          .from(
+            'gallery-photos'
+          )
+          .remove([
+            fileName,
+          ])
       }
 
-      const { error: deleteError } =
-        await supabase
-          .from('gallery')
-          .delete()
-          .eq('id', photoItem.id)
+      // DELETE DATABASE RECORD
+      const {
+        error: deleteError,
+      } = await supabase
+        .from('gallery')
+        .delete()
+        .eq(
+          'id',
+          mediaItem.id
+        )
 
       if (deleteError) {
         throw deleteError
       }
 
       setMessage(
-        'Photo deleted successfully! 🗑️'
+        'Media deleted successfully! 🗑️'
       )
 
       fetchPhotos()
 
     } catch (error) {
-      console.error(error)
-      setMessage(error.message)
+      console.error(
+        'Delete error:',
+        error
+      )
+
+      setMessage(
+        error.message
+      )
     }
   }
+
+  // ==========================================
+  // PREVIEW
+  // ==========================================
+
+  function renderPreview() {
+    if (!photo) {
+      return null
+    }
+
+    const previewUrl =
+      URL.createObjectURL(
+        photo
+      )
+
+    const mediaType =
+      getMediaType(photo)
+
+    return (
+      <div className="upload-preview">
+
+        <p>
+          {mediaType === 'video'
+            ? 'New Video Preview:'
+            : 'New Photo Preview:'}
+        </p>
+
+        <div className="upload-preview-box">
+
+          {mediaType === 'video' ? (
+
+            <video
+              src={previewUrl}
+              controls
+              muted
+              playsInline
+              preload="metadata"
+              className="upload-preview-media"
+            />
+
+          ) : (
+
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="upload-preview-media"
+            />
+
+          )}
+
+        </div>
+
+      </div>
+    )
+  }
+
+  // ==========================================
+  // MEDIA CARD
+  // ==========================================
+
+  function renderMedia(
+    mediaItem
+  ) {
+    const mediaType =
+      mediaItem.media_type ||
+      'image'
+
+    if (
+      mediaType === 'video'
+    ) {
+      return (
+        <div className="admin-media-container">
+
+          <video
+            src={
+              mediaItem.image_url
+            }
+            controls
+            muted
+            playsInline
+            preload="metadata"
+            className="admin-gallery-media"
+          />
+
+          <div className="media-type-badge">
+            🎬 VIDEO
+          </div>
+
+        </div>
+      )
+    }
+
+    return (
+      <div className="admin-media-container">
+
+        <img
+          src={
+            mediaItem.image_url
+          }
+          alt={
+            mediaItem.title ||
+            'Gallery Photo'
+          }
+          className="admin-gallery-media"
+        />
+
+        <div className="media-type-badge">
+          📷 PHOTO
+        </div>
+
+      </div>
+    )
+  }
+
+  // ==========================================
+  // PAGE
+  // ==========================================
 
   return (
     <div className="admin-dashboard">
@@ -323,13 +633,17 @@ function GalleryAdmin() {
           </h1>
 
           <p>
-            Upload and manage organization photos
+            Upload and manage
+            organization photos
+            and videos
           </p>
 
         </div>
 
         <button
-          onClick={() => navigate('/admin')}
+          onClick={() =>
+            navigate('/admin')
+          }
           className="admin-logout-btn"
         >
           ← Dashboard
@@ -338,21 +652,26 @@ function GalleryAdmin() {
       </div>
 
 
-      {/* UPLOAD / EDIT FORM */}
+      {/* UPLOAD / EDIT */}
 
       <div className="admin-upload-card">
 
         <p className="section-label">
+
           {editingId
-            ? 'EDIT PHOTO'
-            : 'UPLOAD PHOTO'}
+            ? 'EDIT MEDIA'
+            : 'UPLOAD MEDIA'}
+
         </p>
 
         <h2>
+
           {editingId
-            ? 'Edit Gallery Photo'
-            : 'Add Gallery Photo'}
+            ? 'Edit Gallery Media'
+            : 'Add Gallery Media'}
+
         </h2>
+
 
         <form
           onSubmit={
@@ -363,174 +682,262 @@ function GalleryAdmin() {
           className="login-form"
         >
 
+          {/* TITLE */}
+
           <input
             type="text"
-            placeholder="Photo Title"
+            placeholder="Photo / Video Title"
             value={title}
             onChange={(e) =>
-              setTitle(e.target.value)
+              setTitle(
+                e.target.value
+              )
             }
             required
           />
 
+
+          {/* DESCRIPTION */}
+
           <textarea
-            placeholder="Photo Description"
-            value={description}
+            placeholder="Photo / Video Description"
+            value={
+              description
+            }
             onChange={(e) =>
-              setDescription(e.target.value)
+              setDescription(
+                e.target.value
+              )
             }
             rows="4"
           />
 
+
+          {/* YEAR */}
+
           <label className="upload-label">
+            Select Gallery Year
+          </label>
+
+          <select
+            value={galleryYear}
+            onChange={(e) =>
+              setGalleryYear(
+                Number(
+                  e.target.value
+                )
+              )
+            }
+            className="gallery-year-select"
+            required
+          >
+
+            {years.map(
+              (year) => (
+                <option
+                  key={year}
+                  value={year}
+                >
+                  {year}
+                </option>
+              )
+            )}
+
+          </select>
+
+
+          {/* FILE */}
+
+          <label className="upload-label">
+
             {editingId
-              ? 'Replace Photo (Optional)'
-              : 'Select Photo'}
+              ? 'Replace Photo / Video (Optional)'
+              : 'Select Photo or Video'}
+
           </label>
 
           <input
             id="gallery-photo-input"
             type="file"
-            accept="image/*"
-            onChange={(e) =>
-              setPhoto(e.target.files[0])
-            }
+            accept="image/*,video/mp4,video/webm,video/quicktime"
+            onChange={(e) => {
+
+              const selectedFile =
+                e.target.files?.[0]
+
+              setPhoto(
+                selectedFile ||
+                null
+              )
+
+            }}
             required={!editingId}
           />
 
-          {photo && (
-            <div className="upload-preview">
 
-              <p>
-                New Photo Preview:
-              </p>
+          {/* PREVIEW */}
 
-              <img
-                src={URL.createObjectURL(photo)}
-                alt="Preview"
-              />
+          {renderPreview()}
 
-            </div>
-          )}
+
+          {/* BUTTON */}
 
           <button
             type="submit"
             className="primary-btn"
             disabled={loading}
           >
+
             {loading
               ? editingId
                 ? 'Updating...'
                 : 'Uploading...'
               : editingId
                 ? '💾 Save Changes'
-                : '📸 Upload Photo'}
+                : '📤 Upload Media'}
+
           </button>
 
+
+          {/* CANCEL */}
+
           {editingId && (
+
             <button
               type="button"
               className="cancel-edit-btn"
-              onClick={cancelEdit}
+              onClick={
+                cancelEdit
+              }
             >
               ✕ Cancel Edit
             </button>
+
           )}
 
         </form>
 
+
+        {/* MESSAGE */}
+
         {message && (
+
           <p className="upload-message">
             {message}
           </p>
+
         )}
 
       </div>
 
 
-      {/* PHOTO LIST */}
+      {/* MANAGE GALLERY */}
 
       <div className="gallery-management">
 
         <p className="section-label">
-          UPLOADED PHOTOS
+          UPLOADED MEDIA
         </p>
 
         <h2>
           Manage Gallery
         </h2>
 
+
         {loadingPhotos ? (
 
           <p className="gallery-admin-message">
-            Loading photos...
+            Loading media...
           </p>
 
         ) : photos.length === 0 ? (
 
           <p className="gallery-admin-message">
-            No photos uploaded yet.
+            No photos or videos uploaded yet.
           </p>
 
         ) : (
 
           <div className="admin-gallery-grid">
 
-            {photos.map((photoItem) => (
+            {photos.map(
+              (mediaItem) => (
 
-              <div
-                className="admin-gallery-card"
-                key={photoItem.id}
-              >
-
-                <img
-                  src={photoItem.image_url}
-                  alt={
-                    photoItem.title ||
-                    'Gallery Photo'
+                <div
+                  className="admin-gallery-card"
+                  key={
+                    mediaItem.id
                   }
-                />
+                >
 
-                <div className="admin-gallery-info">
+                  {/* MEDIA */}
 
-                  <h3>
-                    {photoItem.title ||
-                      'Untitled Photo'}
-                  </h3>
-
-                  {photoItem.description && (
-                    <p>
-                      {photoItem.description}
-                    </p>
+                  {renderMedia(
+                    mediaItem
                   )}
 
-                  <div className="gallery-action-buttons">
 
-                    <button
-                      onClick={() =>
-                        startEdit(photoItem)
-                      }
-                      className="edit-photo-btn"
-                    >
-                      ✏️ Edit
-                    </button>
+                  {/* INFO */}
 
-                    <button
-                      onClick={() =>
-                        handleDelete(photoItem)
-                      }
-                      className="delete-photo-btn"
-                    >
-                      🗑️ Delete
-                    </button>
+                  <div className="admin-gallery-info">
+
+                    <div className="admin-gallery-year">
+                      {mediaItem.gallery_year
+                        ? `📅 ${mediaItem.gallery_year}`
+                        : '📅 Year not set'}
+                    </div>
+
+                    <h3>
+                      {mediaItem.title ||
+                        'Untitled Media'}
+                    </h3>
+
+                    {mediaItem.description && (
+
+                      <p>
+                        {
+                          mediaItem.description
+                        }
+                      </p>
+
+                    )}
+
+
+                    {/* ACTIONS */}
+
+                    <div className="gallery-action-buttons">
+
+                      <button
+                        onClick={() =>
+                          startEdit(
+                            mediaItem
+                          )
+                        }
+                        className="edit-photo-btn"
+                      >
+                        ✏️ Edit
+                      </button>
+
+
+                      <button
+                        onClick={() =>
+                          handleDelete(
+                            mediaItem
+                          )
+                        }
+                        className="delete-photo-btn"
+                      >
+                        🗑️ Delete
+                      </button>
+
+                    </div>
 
                   </div>
 
                 </div>
 
-              </div>
-
-            ))}
+              )
+            )}
 
           </div>
 
