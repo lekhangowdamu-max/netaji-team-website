@@ -57,6 +57,28 @@ function SendNotification() {
         setLoading(false)
         return
       }
+      const {
+  data: { user },
+} = await supabase.auth.getUser()
+
+if (!user) {
+  throw new Error(
+    'You must be logged in.'
+  )
+}
+const { error: saveError } =
+  await supabase
+    .from('notifications')
+    .insert({
+      title,
+      message,
+      url,
+      created_by: user.id,
+    })
+
+if (saveError) {
+  throw saveError
+}
 
       // Call secure Edge Function
       const { data, error: functionError } =

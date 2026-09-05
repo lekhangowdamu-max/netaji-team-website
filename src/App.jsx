@@ -1,3 +1,4 @@
+import Notifications from './pages/Notifications'
 import InstallAndNotification from './components/InstallAndNotification'
 import { useState, useEffect } from 'react'
 import {
@@ -101,6 +102,9 @@ function Home() {
           <a href="#contact">
             Contact
           </a>
+          <Link to="/notifications">
+  🔔 
+</Link>
 
           <Link
             to="/admin"
@@ -585,6 +589,10 @@ function App() {
             <NotificationTest />
           }
         />
+        <Route
+  path="/notifications"
+  element={<Notifications />}
+/>
 
 
         {/* Home */}
