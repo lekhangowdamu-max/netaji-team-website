@@ -99,7 +99,7 @@ async function checkAdmin() {
         {/* Clickable Team Logo */}
         <div className="hero-logo">
           <a
-            href="https://www.youtube.com/@LekhanGowda-z5"
+            href="https://www.instagram.com/netaji_bays?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=="
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -162,23 +162,35 @@ async function checkAdmin() {
         <p>ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ</p>
         <p>📍 ಮರಳಿಗ</p>
 
-        <div className="contact-buttons">
-          <a
-  href="https://www.youtube.com/@LekhanGowda-z5"
-  target="_blank"
-  rel="noreferrer"
->
-  ▶️ YouTube
-</a>
+        <div className="social-links">
 
-<a
-  href="https://www.instagram.com/netaji_bays?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=="
-  target="_blank"
-  rel="noreferrer"
->
-  📸 Instagram
-</a>
-        </div>
+  <a
+    href="https://www.youtube.com/@LekhanGowda-z5"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="YouTube"
+  >
+    <img
+      src="/youtube.png"
+      alt="YouTube"
+      className="social-logo"
+    />
+  </a>
+
+  <a
+    href="https://www.instagram.com/netaji_bays?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=="
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Instagram"
+  >
+    <img
+      src="/instagram.png"
+      alt="Instagram"
+      className="social-logo"
+    />
+  </a>
+
+</div>
       </section>
 
       {/* Footer */}
