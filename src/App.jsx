@@ -1,3 +1,4 @@
+import InstallAndNotification from './components/InstallAndNotification'
 import { useState, useEffect } from 'react'
 import {
   BrowserRouter,
@@ -162,7 +163,7 @@ function Home() {
           </div>
 
         </div>
-
+<InstallAndNotification />
 
         {/* Team Logo */}
         <div className="hero-logo">
