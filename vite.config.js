@@ -15,16 +15,30 @@ export default defineConfig({
 
       filename: 'sw.js',
 
+      // Enable PWA during local development
+      devOptions: {
+        enabled: true,
+        type: 'module',
+      },
+
       manifest: {
         name: 'ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ',
+
         short_name: 'NSBS Youth Sangha',
+
         description:
           'ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ - ಮರಳಿಗ',
+
         theme_color: '#000000',
+
         background_color: '#000000',
+
         display: 'standalone',
+
         orientation: 'portrait',
+
         start_url: '/',
+
         scope: '/',
 
         icons: [
@@ -33,6 +47,7 @@ export default defineConfig({
             sizes: '192x192',
             type: 'image/png',
           },
+
           {
             src: '/pwa-512x512.png',
             sizes: '512x512',
@@ -42,7 +57,9 @@ export default defineConfig({
       },
 
       injectManifest: {
-        globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+        globPatterns: [
+          '**/*.{js,css,html,png,svg,ico}',
+        ],
       },
     }),
   ],

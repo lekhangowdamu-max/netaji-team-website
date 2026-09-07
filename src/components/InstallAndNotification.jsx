@@ -24,7 +24,6 @@ function InstallAndNotification() {
       handleBeforeInstallPrompt
     )
 
-    // Check if app is already running as installed PWA
     const isStandalone =
       window.matchMedia('(display-mode: standalone)').matches ||
       window.navigator.standalone === true
@@ -54,19 +53,16 @@ function InstallAndNotification() {
       return
     }
 
-    // Already allowed
     if (Notification.permission === 'granted') {
       await checkSubscription()
       return
     }
 
-    // Permission denied
     if (Notification.permission === 'denied') {
       setShowNotification(false)
       return
     }
 
-    // Permission not requested yet
     setShowNotification(true)
   }
 
@@ -90,7 +86,12 @@ function InstallAndNotification() {
       .limit(1)
 
     if (error) {
-      console.error('SUBSCRIPTION CHECK ERROR:', error)
+      console.error(
+        'SUBSCRIPTION CHECK ERROR:',
+        error
+      )
+
+      setShowNotification(true)
       return
     }
 
@@ -114,7 +115,8 @@ function InstallAndNotification() {
 
     installPrompt.prompt()
 
-    const { outcome } = await installPrompt.userChoice
+    const { outcome } =
+      await installPrompt.userChoice
 
     if (outcome === 'accepted') {
       setShowInstall(false)
@@ -147,7 +149,12 @@ function InstallAndNotification() {
 
       const {
         data: { session },
+        error: sessionError,
       } = await supabase.auth.getSession()
+
+      if (sessionError) {
+        throw sessionError
+      }
 
       if (!session?.user) {
         throw new Error(
@@ -174,7 +181,9 @@ function InstallAndNotification() {
       }
 
       const applicationServerKey =
-        urlBase64ToUint8Array(vapidPublicKey)
+        urlBase64ToUint8Array(
+          vapidPublicKey
+        )
 
       let subscription =
         await registration.pushManager.getSubscription()
@@ -190,23 +199,50 @@ function InstallAndNotification() {
       const subscriptionJson =
         subscription.toJSON()
 
-      const { error } = await supabase
-        .from('notification_subscriptions')
-        .upsert(
-          {
-            user_id: session.user.id,
-            endpoint: subscriptionJson.endpoint,
-            p256dh:
-              subscriptionJson.keys?.p256dh,
-            auth: subscriptionJson.keys?.auth,
-          },
-          {
-            onConflict: 'endpoint',
-          }
+      const endpoint =
+        subscriptionJson.endpoint
+
+      const p256dh =
+        subscriptionJson.keys?.p256dh
+
+      const auth =
+        subscriptionJson.keys?.auth
+
+      if (!endpoint || !p256dh || !auth) {
+        throw new Error(
+          'Unable to read the browser notification subscription.'
+        )
+      }
+
+      // -----------------------------------
+      // SAVE SUBSCRIPTION
+      // -----------------------------------
+      const { error: saveError } =
+        await supabase
+          .from('notification_subscriptions')
+          .upsert(
+            {
+              user_id: session.user.id,
+              endpoint,
+              p256dh,
+              auth,
+            },
+            {
+              onConflict:
+                'user_id,endpoint',
+            }
+          )
+
+      if (saveError) {
+        console.error(
+          'SUBSCRIPTION SAVE ERROR:',
+          saveError
         )
 
-      if (error) {
-        throw error
+        throw new Error(
+          saveError.message ||
+            'Unable to save notification subscription.'
+        )
       }
 
       setShowNotification(false)
@@ -214,6 +250,7 @@ function InstallAndNotification() {
       setMessage(
         'Notifications enabled successfully! 🔔'
       )
+
     } catch (error) {
       console.error(
         'NOTIFICATION ERROR:',
@@ -221,9 +258,10 @@ function InstallAndNotification() {
       )
 
       setMessage(
-        error.message ||
+        error?.message ||
           'Unable to enable notifications.'
       )
+
     } finally {
       setLoading(false)
     }
@@ -232,18 +270,25 @@ function InstallAndNotification() {
   // -----------------------------------
   // BASE64 → UINT8ARRAY
   // -----------------------------------
-  function urlBase64ToUint8Array(base64String) {
+  function urlBase64ToUint8Array(
+    base64String
+  ) {
     const padding =
       '='.repeat(
-        (4 - (base64String.length % 4)) % 4
+        (4 -
+          (base64String.length % 4)) %
+          4
       )
 
     const base64 =
-      (base64String + padding)
+      (
+        base64String + padding
+      )
         .replace(/-/g, '+')
         .replace(/_/g, '/')
 
-    const rawData = window.atob(base64)
+    const rawData =
+      window.atob(base64)
 
     return Uint8Array.from(
       [...rawData].map((char) =>
@@ -255,7 +300,11 @@ function InstallAndNotification() {
   // -----------------------------------
   // NOTHING TO SHOW
   // -----------------------------------
-  if (!showInstall && !showNotification && !message) {
+  if (
+    !showInstall &&
+    !showNotification &&
+    !message
+  ) {
     return null
   }
 
