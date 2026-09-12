@@ -267,18 +267,18 @@ function Home() {
 
         <div className="social-links">
 
-          <a
-            href="https://youtube.com/@nsbsboys?si=2slupKi2pDyedxnT"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="YouTube"
-          >
+        <a
+  href="https://youtube.com/@nsbsboys"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Official YouTube"
+>
+  <img
+    src="/youtube.png"
+    alt="YouTube"
+    className="social-logo"
+  />
 
-            <img
-              src="/youtube.png"
-              alt="YouTube"
-              className="social-logo"
-            />
 
           </a>
 
