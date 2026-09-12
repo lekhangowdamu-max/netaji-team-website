@@ -30,10 +30,11 @@ import { supabase } from './lib/supabase'
    OFFICIAL LINKS
 ===================================================== */
 
-const YOUTUBE_URL = 'https://youtube.com/@nsbsboys'
+const YOUTUBE_URL =
+  'https://youtube.com/@nsbsboys'
 
 const INSTAGRAM_URL =
-  'https://www.instagram.com/netaji_bays?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=='
+  'https://www.instagram.com/netaji_boys_maraliga/'
 
 
 /* =====================================================
@@ -48,7 +49,9 @@ function Home() {
 
 
   useEffect(() => {
+
     checkAdmin()
+
   }, [])
 
 
@@ -90,7 +93,9 @@ function Home() {
       )
 
       setIsAdmin(false)
+
     }
+
   }
 
 
@@ -99,6 +104,7 @@ function Home() {
     await supabase.auth.signOut()
 
     navigate('/login')
+
   }
 
 
@@ -395,12 +401,12 @@ function Home() {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Instagram"
+            aria-label="Official Instagram"
           >
 
             <img
               src="/instagram.png"
-              alt="Instagram"
+              alt="Official Instagram"
               className="social-logo"
             />
 
@@ -438,6 +444,7 @@ function Home() {
 
     </div>
   )
+
 }
 
 
@@ -495,6 +502,7 @@ function Login() {
       setLoading(false)
 
       return
+
     }
 
 
@@ -610,7 +618,9 @@ function Login() {
       </section>
 
     </div>
+
   )
+
 }
 
 
@@ -946,6 +956,7 @@ function App() {
     </BrowserRouter>
 
   )
+
 }
 
 
