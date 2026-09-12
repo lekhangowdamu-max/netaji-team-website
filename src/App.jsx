@@ -268,7 +268,7 @@ function Home() {
         <div className="social-links">
 
           <a
-            href="https://www.youtube.com/@LekhanGowda-z5"
+            href="www.youtube.com/@NSBSBoys"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="YouTube"
