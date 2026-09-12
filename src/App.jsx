@@ -27,40 +27,63 @@ import { supabase } from './lib/supabase'
 
 
 /* =====================================================
+   OFFICIAL LINKS
+===================================================== */
+
+const YOUTUBE_URL = 'https://youtube.com/@nsbsboys'
+
+const INSTAGRAM_URL =
+  'https://www.instagram.com/netaji_bays?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=='
+
+
+/* =====================================================
    HOME PAGE
 ===================================================== */
 
 function Home() {
+
   const [isAdmin, setIsAdmin] = useState(false)
 
   const navigate = useNavigate()
+
 
   useEffect(() => {
     checkAdmin()
   }, [])
 
+
   async function checkAdmin() {
+
     try {
+
       const {
         data: userData,
       } = await supabase.auth.getUser()
 
+
       if (!userData.user) {
+
         setIsAdmin(false)
+
         return
       }
 
-      const { data } = await supabase
-        .from('admins')
-        .select('user_id')
-        .eq(
-          'user_id',
-          userData.user.id
-        )
-        .maybeSingle()
+
+      const { data } =
+        await supabase
+          .from('admins')
+          .select('user_id')
+          .eq(
+            'user_id',
+            userData.user.id
+          )
+          .maybeSingle()
+
 
       setIsAdmin(!!data)
+
     } catch (error) {
+
       console.error(
         'ADMIN CHECK ERROR:',
         error
@@ -70,20 +93,32 @@ function Home() {
     }
   }
 
+
   async function handleLogout() {
+
     await supabase.auth.signOut()
+
     navigate('/login')
   }
 
+
   return (
+
     <div className="website">
 
-      {/* Navigation */}
+
+      {/* =====================================================
+          NAVIGATION
+      ===================================================== */}
+
       <nav className="navbar">
 
         <div className="nav-logo">
+
           ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ (ರಿ)
+
         </div>
+
 
         <div className="nav-links">
 
@@ -91,20 +126,26 @@ function Home() {
             Home
           </Link>
 
+
           <Link to="/members">
             Members
           </Link>
+
 
           <Link to="/gallery">
             Gallery
           </Link>
 
+
           <a href="#contact">
             Contact
           </a>
+
+
           <Link to="/notifications">
-  🔔 
-</Link>
+            🔔
+          </Link>
+
 
           <Link
             to="/admin"
@@ -113,8 +154,11 @@ function Home() {
             🔐 Admin Panel
           </Link>
 
+
           <button
-            onClick={() => navigate('/login')}
+            onClick={() =>
+              navigate('/login')
+            }
             className="login-btn"
           >
             Login
@@ -125,7 +169,11 @@ function Home() {
       </nav>
 
 
-      {/* Hero */}
+
+      {/* =====================================================
+          HERO SECTION
+      ===================================================== */}
+
       <section
         id="home"
         className="hero-section"
@@ -133,22 +181,33 @@ function Home() {
 
         <div className="hero-content">
 
+
           <p className="small-title">
             ಮರಳಿಗ
           </p>
 
+
           <h1>
+
             ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್
+
             <br />
+
             ಯುವಕರ ಸಂಘ(ರಿ).
+
           </h1>
 
+
           <p className="hero-description">
+
             ನಮ್ಮ ಯುವಕರ ಒಗ್ಗಟ್ಟು, ಸೇವೆ ಮತ್ತು
             ಸಂಸ್ಕೃತಿಯ ಪ್ರತೀಕ.
+
           </p>
 
+
           <div className="hero-buttons">
+
 
             <Link
               to="/members"
@@ -157,6 +216,7 @@ function Home() {
               ನಮ್ಮ ತಂಡ
             </Link>
 
+
             <Link
               to="/gallery"
               className="secondary-btn"
@@ -164,23 +224,34 @@ function Home() {
               ಫೋಟೋ ಗ್ಯಾಲರಿ
             </Link>
 
+
           </div>
 
         </div>
-<InstallAndNotification />
 
-        {/* Team Logo */}
+
+        {/* INSTALL + NOTIFICATION */}
+
+        <InstallAndNotification />
+
+
+        {/* =====================================================
+            TEAM LOGO
+            CLICKING LOGO OPENS OFFICIAL YOUTUBE
+        ===================================================== */}
+
         <div className="hero-logo">
 
           <a
-            href="https://www.instagram.com/netaji_bays?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=="
+            href={YOUTUBE_URL}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Official YouTube Channel"
           >
 
             <img
               src={teamLogo}
-              alt="ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ"
+              alt="ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ - Official YouTube Channel"
             />
 
           </a>
@@ -190,37 +261,51 @@ function Home() {
       </section>
 
 
-      {/* About */}
+
+      {/* =====================================================
+          ABOUT
+      ===================================================== */}
+
       <section className="about-section">
 
         <p className="section-label">
           ABOUT US
         </p>
 
+
         <h2>
           ನಮ್ಮ ಸಂಘದ ಬಗ್ಗೆ
         </h2>
 
+
         <p>
+
           ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘವು
           ಯುವಕರ ಒಗ್ಗಟ್ಟು, ಸಮಾಜ ಸೇವೆ, ಸಂಸ್ಕೃತಿ
           ಮತ್ತು ನಮ್ಮ ಗ್ರಾಮದ ಅಭಿವೃದ್ಧಿಗಾಗಿ
           ಕಾರ್ಯನಿರ್ವಹಿಸುವ ಯುವಕರ ಸಂಘವಾಗಿದೆ.
+
         </p>
 
       </section>
 
 
-      {/* Members */}
+
+      {/* =====================================================
+          MEMBERS
+      ===================================================== */}
+
       <section className="members-section">
 
         <p className="section-label">
           OUR TEAM
         </p>
 
+
         <h2>
           ನಮ್ಮ ತಂಡ
         </h2>
+
 
         <p
           style={{
@@ -228,9 +313,12 @@ function Home() {
             marginBottom: '25px',
           }}
         >
+
           ನಮ್ಮ ಸಂಘದ ಎಲ್ಲಾ ಸದಸ್ಯರನ್ನು ನೋಡಲು
           ಕೆಳಗಿನ ಬಟನ್ ಒತ್ತಿ.
+
         </p>
+
 
         <Link
           to="/members"
@@ -242,7 +330,11 @@ function Home() {
       </section>
 
 
-      {/* Contact */}
+
+      {/* =====================================================
+          CONTACT
+      ===================================================== */}
+
       <section
         id="contact"
         className="contact-section"
@@ -252,39 +344,55 @@ function Home() {
           CONTACT
         </p>
 
+
         <h2>
           ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿ
         </h2>
 
+
         <p>
           ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ
         </p>
+
 
         <p>
           📍 ಮರಳಿಗ
         </p>
 
 
+
+        {/* SOCIAL LINKS */}
+
         <div className="social-links">
 
-        <a
-  href="https://youtube.com/@nsbsboys"
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label="Official YouTube"
->
-  <img
-    src="/youtube.png"
-    alt="YouTube"
-    className="social-logo"
-  />
 
+          {/* =================================================
+              YOUTUBE
+          ================================================= */}
+
+          <a
+            href={YOUTUBE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Official YouTube Channel"
+          >
+
+            <img
+              src="/youtube.png"
+              alt="Official YouTube Channel"
+              className="social-logo"
+            />
 
           </a>
 
 
+
+          {/* =================================================
+              INSTAGRAM
+          ================================================= */}
+
           <a
-            href="https://www.instagram.com/netaji_bays?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=="
+            href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
@@ -298,21 +406,28 @@ function Home() {
 
           </a>
 
+
         </div>
 
       </section>
 
 
-      {/* Footer */}
+
+      {/* =====================================================
+          FOOTER
+      ===================================================== */}
+
       <footer>
 
         <h3>
           ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ
         </h3>
 
+
         <p>
           ಮರಳಿಗ
         </p>
+
 
         <p>
           © 2026 All Rights Reserved.
@@ -320,9 +435,11 @@ function Home() {
 
       </footer>
 
+
     </div>
   )
 }
+
 
 
 /* =====================================================
@@ -330,53 +447,84 @@ function Home() {
 ===================================================== */
 
 function Login() {
+
   const navigate = useNavigate()
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
 
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [email, setEmail] =
+    useState('')
+
+
+  const [password, setPassword] =
+    useState('')
+
+
+  const [loading, setLoading] =
+    useState(false)
+
+
+  const [error, setError] =
+    useState('')
+
 
 
   async function handleLogin(e) {
+
     e.preventDefault()
 
+
     setLoading(true)
+
     setError('')
+
 
     const { error } =
       await supabase.auth.signInWithPassword({
+
         email,
+
         password,
+
       })
 
+
     if (error) {
+
       setError(error.message)
+
       setLoading(false)
+
       return
     }
 
+
     setLoading(false)
 
+
     navigate('/')
+
   }
 
 
+
   return (
+
     <div className="website">
 
       <section
         className="about-section login-section"
       >
 
+
         <p className="section-label">
           MEMBER ACCESS
         </p>
 
+
         <h2>
           Login
         </h2>
+
 
         <p
           style={{
@@ -384,14 +532,18 @@ function Login() {
             marginBottom: '25px',
           }}
         >
+
           ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ
+
         </p>
+
 
 
         <form
           onSubmit={handleLogin}
           className="login-form"
         >
+
 
           <input
             type="email"
@@ -416,6 +568,7 @@ function Login() {
 
 
           {error && (
+
             <p
               style={{
                 color: '#ff6b6b',
@@ -423,6 +576,7 @@ function Login() {
             >
               {error}
             </p>
+
           )}
 
 
@@ -431,15 +585,19 @@ function Login() {
             className="primary-btn"
             disabled={loading}
           >
+
             {loading
               ? 'Logging in...'
               : 'Login'}
+
           </button>
+
 
         </form>
 
 
         <br />
+
 
         <Link
           to="/"
@@ -448,11 +606,13 @@ function Login() {
           Back to Home
         </Link>
 
+
       </section>
 
     </div>
   )
 }
+
 
 
 /* =====================================================
@@ -464,13 +624,18 @@ function AdminRoute({ children }) {
   const [checking, setChecking] =
     useState(true)
 
+
   const [isAdmin, setIsAdmin] =
     useState(false)
 
 
+
   useEffect(() => {
+
     checkAdmin()
+
   }, [])
+
 
 
   async function checkAdmin() {
@@ -488,10 +653,15 @@ function AdminRoute({ children }) {
         userError ||
         !userData.user
       ) {
+
         setIsAdmin(false)
+
         setChecking(false)
+
         return
+
       }
+
 
 
       const {
@@ -506,6 +676,7 @@ function AdminRoute({ children }) {
             userData.user.id
           )
           .maybeSingle()
+
 
 
       if (error) {
@@ -523,6 +694,7 @@ function AdminRoute({ children }) {
 
       }
 
+
     } catch (error) {
 
       console.error(
@@ -534,13 +706,17 @@ function AdminRoute({ children }) {
 
     }
 
+
     setChecking(false)
+
   }
+
 
 
   if (checking) {
 
     return (
+
       <div className="website">
 
         <section className="about-section">
@@ -552,22 +728,32 @@ function AdminRoute({ children }) {
         </section>
 
       </div>
+
     )
+
   }
 
 
+
   if (!isAdmin) {
+
     return (
+
       <Navigate
         to="/login"
         replace
       />
+
     )
+
   }
 
 
+
   return children
+
 }
+
 
 
 /* =====================================================
@@ -582,20 +768,37 @@ function App() {
 
       <Routes>
 
-        {/* Notification Test */}
+
+        {/* =================================================
+            NOTIFICATION TEST
+        ================================================= */}
+
         <Route
           path="/notification-test"
           element={
             <NotificationTest />
           }
         />
+
+
+
+        {/* =================================================
+            NOTIFICATIONS
+        ================================================= */}
+
         <Route
-  path="/notifications"
-  element={<Notifications />}
-/>
+          path="/notifications"
+          element={
+            <Notifications />
+          }
+        />
 
 
-        {/* Home */}
+
+        {/* =================================================
+            HOME
+        ================================================= */}
+
         <Route
           path="/"
           element={
@@ -604,18 +807,30 @@ function App() {
         />
 
 
-        {/* Admin Dashboard */}
+
+        {/* =================================================
+            ADMIN DASHBOARD
+        ================================================= */}
+
         <Route
           path="/admin"
           element={
+
             <AdminRoute>
+
               <AdminDashboard />
+
             </AdminRoute>
+
           }
         />
 
 
-        {/* Members */}
+
+        {/* =================================================
+            MEMBERS
+        ================================================= */}
+
         <Route
           path="/members"
           element={
@@ -624,7 +839,11 @@ function App() {
         />
 
 
-        {/* Gallery */}
+
+        {/* =================================================
+            GALLERY
+        ================================================= */}
+
         <Route
           path="/gallery"
           element={
@@ -633,7 +852,11 @@ function App() {
         />
 
 
-        {/* Login */}
+
+        {/* =================================================
+            LOGIN
+        ================================================= */}
+
         <Route
           path="/login"
           element={
@@ -642,52 +865,86 @@ function App() {
         />
 
 
-        {/* Add Member */}
+
+        {/* =================================================
+            ADD MEMBER
+        ================================================= */}
+
         <Route
           path="/add-member"
           element={
+
             <AdminRoute>
+
               <AddMember />
+
             </AdminRoute>
+
           }
         />
 
 
-        {/* Edit Member */}
+
+        {/* =================================================
+            EDIT MEMBER
+        ================================================= */}
+
         <Route
           path="/edit-member/:id"
           element={
+
             <AdminRoute>
+
               <EditMember />
+
             </AdminRoute>
+
           }
         />
 
 
-        {/* Gallery Admin */}
+
+        {/* =================================================
+            GALLERY ADMIN
+        ================================================= */}
+
         <Route
           path="/gallery-admin"
           element={
+
             <AdminRoute>
+
               <GalleryAdmin />
+
             </AdminRoute>
+
           }
         />
 
 
-        {/* Send Notification */}
+
+        {/* =================================================
+            SEND NOTIFICATION
+        ================================================= */}
+
         <Route
           path="/send-notification"
           element={
+
             <AdminRoute>
+
               <SendNotification />
+
             </AdminRoute>
+
           }
         />
+
 
       </Routes>
 
     </BrowserRouter>
+
   )
 }
 
