@@ -1,6 +1,8 @@
 import Notifications from './pages/Notifications'
 import InstallAndNotification from './components/InstallAndNotification'
+
 import { useState, useEffect } from 'react'
+
 import {
   BrowserRouter,
   Routes,
@@ -43,69 +45,201 @@ const INSTAGRAM_URL =
 
 function Home() {
 
-  const [isAdmin, setIsAdmin] = useState(false)
-
   const navigate = useNavigate()
 
+  const [user, setUser] =
+    useState(null)
+
+  const [userRole, setUserRole] =
+    useState('')
+
+  const [loadingUser, setLoadingUser] =
+    useState(true)
+
+
+  /* =====================================================
+     CHECK LOGIN + ROLE
+  ===================================================== */
 
   useEffect(() => {
 
-    checkAdmin()
+    loadUser()
+
+    const {
+      data: authListener
+    } =
+      supabase.auth.onAuthStateChange(
+        async (_event, session) => {
+
+          if (!session?.user) {
+
+            setUser(null)
+            setUserRole('')
+            setLoadingUser(false)
+
+            return
+          }
+
+          setUser(session.user)
+
+          await loadUserRole(
+            session.user.id
+          )
+
+        }
+      )
+
+
+    return () => {
+
+      authListener.subscription.unsubscribe()
+
+    }
 
   }, [])
 
 
-  async function checkAdmin() {
+  /* =====================================================
+     LOAD CURRENT USER
+  ===================================================== */
+
+  async function loadUser() {
 
     try {
 
       const {
-        data: userData,
-      } = await supabase.auth.getUser()
+        data,
+        error,
+      } =
+        await supabase.auth.getUser()
 
 
-      if (!userData.user) {
+      if (
+        error ||
+        !data?.user
+      ) {
 
-        setIsAdmin(false)
+        setUser(null)
+        setUserRole('')
+        setLoadingUser(false)
 
         return
+
       }
 
 
-      const { data } =
-        await supabase
-          .from('admins')
-          .select('user_id')
-          .eq(
-            'user_id',
-            userData.user.id
-          )
-          .maybeSingle()
+      setUser(data.user)
 
-
-      setIsAdmin(!!data)
+      await loadUserRole(
+        data.user.id
+      )
 
     } catch (error) {
 
       console.error(
-        'ADMIN CHECK ERROR:',
+        'USER LOAD ERROR:',
         error
       )
 
-      setIsAdmin(false)
+      setUser(null)
+      setUserRole('')
+
+    }
+
+    setLoadingUser(false)
+
+  }
+
+
+  /* =====================================================
+     LOAD USER ROLE
+  ===================================================== */
+
+  async function loadUserRole(userId) {
+
+    try {
+
+      const {
+        data,
+        error,
+      } =
+        await supabase
+          .from('profiles')
+          .select('role')
+          .eq(
+            'id',
+            userId
+          )
+          .maybeSingle()
+
+
+      if (error) {
+
+        console.error(
+          'ROLE LOAD ERROR:',
+          error
+        )
+
+        setUserRole('')
+
+        return
+
+      }
+
+
+      setUserRole(
+        data?.role || ''
+      )
+
+    } catch (error) {
+
+      console.error(
+        'ROLE CHECK ERROR:',
+        error
+      )
+
+      setUserRole('')
 
     }
 
   }
 
 
+  /* =====================================================
+     LOGOUT
+  ===================================================== */
+
   async function handleLogout() {
 
-    await supabase.auth.signOut()
+    try {
 
-    navigate('/login')
+      await supabase.auth.signOut()
+
+      setUser(null)
+      setUserRole('')
+
+      navigate('/')
+
+    } catch (error) {
+
+      console.error(
+        'LOGOUT ERROR:',
+        error
+      )
+
+    }
 
   }
+
+
+  const isLoggedIn =
+    !!user
+
+  const isAdmin =
+    userRole === 'admin'
+
+  const isMember =
+    userRole === 'member'
 
 
   return (
@@ -119,6 +253,11 @@ function Home() {
 
       <nav className="navbar">
 
+
+        {/* =================================================
+            LOGO / TEAM NAME
+        ================================================= */}
+
         <div className="nav-logo">
 
           ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ (ರಿ)
@@ -126,7 +265,12 @@ function Home() {
         </div>
 
 
+        {/* =================================================
+            NAVIGATION LINKS
+        ================================================= */}
+
         <div className="nav-links">
+
 
           <Link to="/">
             Home
@@ -153,22 +297,67 @@ function Home() {
           </Link>
 
 
-          <Link
-            to="/admin"
-            className="admin-nav-btn"
-          >
-            🔐 Admin Panel
-          </Link>
+          {/* =================================================
+              MEMBER + ADMIN GALLERY UPLOAD
+          ================================================= */}
+
+          {isLoggedIn &&
+            (isMember || isAdmin) && (
+
+              <Link
+                to="/gallery-admin"
+                className="admin-nav-btn"
+              >
+                📸 Upload
+              </Link>
+
+            )}
 
 
-          <button
-            onClick={() =>
-              navigate('/login')
-            }
-            className="login-btn"
-          >
-            Login
-          </button>
+          {/* =================================================
+              ADMIN PANEL
+          ================================================= */}
+
+          {isAdmin && (
+
+            <Link
+              to="/admin"
+              className="admin-nav-btn"
+            >
+              🔐 Admin Panel
+            </Link>
+
+          )}
+
+
+          {/* =================================================
+              LOGIN / LOGOUT
+          ================================================= */}
+
+          {!isLoggedIn && (
+
+            <button
+              onClick={() =>
+                navigate('/login')
+              }
+              className="login-btn"
+            >
+              Login
+            </button>
+
+          )}
+
+
+          {isLoggedIn && (
+
+            <button
+              onClick={handleLogout}
+              className="login-btn"
+            >
+              Logout
+            </button>
+
+          )}
 
         </div>
 
@@ -184,6 +373,7 @@ function Home() {
         id="home"
         className="hero-section"
       >
+
 
         <div className="hero-content">
 
@@ -233,17 +423,22 @@ function Home() {
 
           </div>
 
+
         </div>
 
 
-        {/* INSTALL + NOTIFICATION */}
+
+        {/* =====================================================
+            INSTALL + NOTIFICATION
+        ===================================================== */}
 
         <InstallAndNotification />
 
 
+
         {/* =====================================================
             TEAM LOGO
-            CLICKING LOGO OPENS OFFICIAL YOUTUBE
+            CLICK → OFFICIAL YOUTUBE
         ===================================================== */}
 
         <div className="hero-logo">
@@ -338,6 +533,55 @@ function Home() {
 
 
       {/* =====================================================
+          MEMBER UPLOAD INFORMATION
+      ===================================================== */}
+
+      {isLoggedIn &&
+        (isMember || isAdmin) && (
+
+          <section
+            className="about-section"
+          >
+
+            <p className="section-label">
+              GALLERY
+            </p>
+
+
+            <h2>
+              📸 ಫೋಟೋ ಮತ್ತು ವಿಡಿಯೋ
+            </h2>
+
+
+            <p
+              style={{
+                color: '#aaa',
+                marginBottom: '25px',
+              }}
+            >
+
+              {isAdmin
+                ? 'ನೀವು Gallery ಅನ್ನು ನಿರ್ವಹಿಸಬಹುದು.'
+                : 'ನೀವು ಸಂಘದ Gallery ಗೆ ಫೋಟೋ ಮತ್ತು ವಿಡಿಯೋಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಬಹುದು.'
+              }
+
+            </p>
+
+
+            <Link
+              to="/gallery-admin"
+              className="primary-btn"
+            >
+              📸 Upload Photo / Video
+            </Link>
+
+          </section>
+
+        )}
+
+
+
+      {/* =====================================================
           CONTACT
       ===================================================== */}
 
@@ -345,6 +589,7 @@ function Home() {
         id="contact"
         className="contact-section"
       >
+
 
         <p className="section-label">
           CONTACT
@@ -367,7 +612,9 @@ function Home() {
 
 
 
-        {/* SOCIAL LINKS */}
+        {/* =================================================
+            SOCIAL LINKS
+        ================================================= */}
 
         <div className="social-links">
 
@@ -443,6 +690,7 @@ function Home() {
 
 
     </div>
+
   )
 
 }
@@ -485,31 +733,50 @@ function Login() {
     setError('')
 
 
-    const { error } =
-      await supabase.auth.signInWithPassword({
+    try {
 
-        email,
+      const {
+        error
+      } =
+        await supabase.auth.signInWithPassword({
 
-        password,
+          email,
 
-      })
+          password,
+
+        })
 
 
-    if (error) {
+      if (error) {
 
-      setError(error.message)
+        setError(
+          error.message
+        )
 
-      setLoading(false)
+        setLoading(false)
 
-      return
+        return
+
+      }
+
+
+      navigate('/')
+
+    } catch (error) {
+
+      console.error(
+        'LOGIN ERROR:',
+        error
+      )
+
+      setError(
+        'Unable to login. Please try again.'
+      )
 
     }
 
 
     setLoading(false)
-
-
-    navigate('/')
 
   }
 
@@ -627,6 +894,7 @@ function Login() {
 
 /* =====================================================
    ADMIN ROUTE
+   ONLY ADMIN
 ===================================================== */
 
 function AdminRoute({ children }) {
@@ -661,7 +929,7 @@ function AdminRoute({ children }) {
 
       if (
         userError ||
-        !userData.user
+        !userData?.user
       ) {
 
         setIsAdmin(false)
@@ -679,10 +947,10 @@ function AdminRoute({ children }) {
         error,
       } =
         await supabase
-          .from('admins')
-          .select('user_id')
+          .from('profiles')
+          .select('role')
           .eq(
-            'user_id',
+            'id',
             userData.user.id
           )
           .maybeSingle()
@@ -692,7 +960,7 @@ function AdminRoute({ children }) {
       if (error) {
 
         console.error(
-          'Admin check error:',
+          'ADMIN ROLE CHECK ERROR:',
           error
         )
 
@@ -700,7 +968,9 @@ function AdminRoute({ children }) {
 
       } else {
 
-        setIsAdmin(!!data)
+        setIsAdmin(
+          data?.role === 'admin'
+        )
 
       }
 
@@ -746,6 +1016,169 @@ function AdminRoute({ children }) {
 
 
   if (!isAdmin) {
+
+    return (
+
+      <Navigate
+        to="/login"
+        replace
+      />
+
+    )
+
+  }
+
+
+
+  return children
+
+}
+
+
+
+/* =====================================================
+   GALLERY ACCESS ROUTE
+   ADMIN + MEMBER
+===================================================== */
+
+function GalleryAccessRoute({
+  children,
+}) {
+
+  const [checking, setChecking] =
+    useState(true)
+
+
+  const [hasAccess, setHasAccess] =
+    useState(false)
+
+
+
+  useEffect(() => {
+
+    checkGalleryAccess()
+
+  }, [])
+
+
+
+  async function checkGalleryAccess() {
+
+    try {
+
+      /* =================================================
+         GET LOGGED-IN USER
+      ================================================= */
+
+      const {
+        data: userData,
+        error: userError,
+      } =
+        await supabase.auth.getUser()
+
+
+      if (
+        userError ||
+        !userData?.user
+      ) {
+
+        setHasAccess(false)
+
+        setChecking(false)
+
+        return
+
+      }
+
+
+
+      /* =================================================
+         GET ROLE
+      ================================================= */
+
+      const {
+        data,
+        error,
+      } =
+        await supabase
+          .from('profiles')
+          .select('role')
+          .eq(
+            'id',
+            userData.user.id
+          )
+          .maybeSingle()
+
+
+
+      if (error) {
+
+        console.error(
+          'GALLERY ACCESS ERROR:',
+          error
+        )
+
+        setHasAccess(false)
+
+      } else {
+
+        const role =
+          data?.role
+
+
+        /* ===============================================
+           ADMIN OR MEMBER
+        =============================================== */
+
+        setHasAccess(
+          role === 'admin' ||
+          role === 'member'
+        )
+
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        'GALLERY ACCESS ROUTE ERROR:',
+        error
+      )
+
+      setHasAccess(false)
+
+    }
+
+
+    setChecking(false)
+
+  }
+
+
+
+  if (checking) {
+
+    return (
+
+      <div className="website">
+
+        <section className="about-section">
+
+          <h2>
+            Checking gallery access...
+          </h2>
+
+        </section>
+
+      </div>
+
+    )
+
+  }
+
+
+
+  if (!hasAccess) {
 
     return (
 
@@ -820,6 +1253,7 @@ function App() {
 
         {/* =================================================
             ADMIN DASHBOARD
+            ADMIN ONLY
         ================================================= */}
 
         <Route
@@ -852,6 +1286,7 @@ function App() {
 
         {/* =================================================
             GALLERY
+            PUBLIC
         ================================================= */}
 
         <Route
@@ -878,6 +1313,7 @@ function App() {
 
         {/* =================================================
             ADD MEMBER
+            ADMIN ONLY
         ================================================= */}
 
         <Route
@@ -897,6 +1333,7 @@ function App() {
 
         {/* =================================================
             EDIT MEMBER
+            ADMIN ONLY
         ================================================= */}
 
         <Route
@@ -915,18 +1352,19 @@ function App() {
 
 
         {/* =================================================
-            GALLERY ADMIN
+            GALLERY ADMIN / UPLOAD
+            ADMIN + MEMBER
         ================================================= */}
 
         <Route
           path="/gallery-admin"
           element={
 
-            <AdminRoute>
+            <GalleryAccessRoute>
 
               <GalleryAdmin />
 
-            </AdminRoute>
+            </GalleryAccessRoute>
 
           }
         />
@@ -935,6 +1373,7 @@ function App() {
 
         {/* =================================================
             SEND NOTIFICATION
+            ADMIN ONLY
         ================================================= */}
 
         <Route
