@@ -399,6 +399,10 @@ function Home() {
             ನಮ್ಮ ಯುವಕರ ಒಗ್ಗಟ್ಟು, ಸೇವೆ ಮತ್ತು
             ಸಂಸ್ಕೃತಿಯ ಪ್ರತೀಕ.
 
+            <br />
+
+            Netaji Maraliga • Netaji Boys Maraliga
+
           </p>
 
 
@@ -486,6 +490,42 @@ function Home() {
           ಮತ್ತು ನಮ್ಮ ಗ್ರಾಮದ ಅಭಿವೃದ್ಧಿಗಾಗಿ
           ಕಾರ್ಯನಿರ್ವಹಿಸುವ ಯುವಕರ ಸಂಘವಾಗಿದೆ.
 
+        </p>
+
+      </section>
+
+
+      {/* =====================================================
+          SEO / ORGANIZATION INFORMATION
+          Helps search engines understand the English names
+          associated with the official Kannada organization.
+      ===================================================== */}
+
+      <section
+        className="about-section seo-section"
+        aria-labelledby="netaji-maraliga-title"
+      >
+
+        <p className="section-label">
+          NETAJI MARALIGA
+        </p>
+
+        <h2 id="netaji-maraliga-title">
+          Netaji Maraliga – Official Website
+        </h2>
+
+        <p>
+          Netaji Maraliga is the official website of
+          ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ, ಮರಳಿಗ.
+          The organization is also known as Netaji Boys Maraliga
+          and Nethaji Boys Maraliga.
+        </p>
+
+        <p>
+          This official website provides information about our
+          team members, community activities, Ganeshotsava
+          celebrations, events, photos, videos and social
+          activities in Maraliga.
         </p>
 
       </section>
