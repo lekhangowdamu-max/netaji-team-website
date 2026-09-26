@@ -507,25 +507,53 @@ function Home() {
       >
 
         <p className="section-label">
-          NETAJI MARALIGA
+          OFFICIAL WEBSITE
         </p>
 
         <h2 id="netaji-maraliga-title">
-          Netaji Maraliga – Official Website
+          Netaji Maraliga – ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ
         </h2>
 
         <p>
-          Netaji Maraliga is the official website of
-          ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ, ಮರಳಿಗ.
-          The organization is also known as Netaji Boys Maraliga
-          and Nethaji Boys Maraliga.
+          <strong>Netaji Maraliga</strong> is the official website
+          of <strong>ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ</strong>,
+          ಮರಳಿಗ.
         </p>
 
         <p>
-          This official website provides information about our
-          team members, community activities, Ganeshotsava
-          celebrations, events, photos, videos and social
-          activities in Maraliga.
+          The organization is also known online as
+          <strong> Netaji Boys Maraliga</strong> and
+          <strong> Nethaji Boys Maraliga</strong>.
+          This website is the official online home of the team
+          and provides information about its members, activities
+          and community events.
+        </p>
+
+        <p>
+          Explore the
+          <Link to="/members"> team members</Link> and visit the
+          <Link to="/gallery"> photo and video gallery</Link>
+          for memories and activities of the organization,
+          including Ganeshotsava celebrations in Maraliga.
+        </p>
+
+        <p>
+          Our official social channels are available through
+          <a
+            href={YOUTUBE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            YouTube
+          </a>
+          {' '}and{' '}
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Instagram
+          </a>.
         </p>
 
       </section>
@@ -721,6 +749,9 @@ function Home() {
           ಮರಳಿಗ
         </p>
 
+        <p>
+          Netaji Maraliga • Netaji Boys Maraliga
+        </p>
 
         <p>
           © 2026 All Rights Reserved.
