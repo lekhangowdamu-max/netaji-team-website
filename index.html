@@ -58,9 +58,6 @@
 
     <!-- =====================================================
          ORGANIZATION IDENTITY
-         Helps search engines and machine-readable systems
-         understand the relationship between the Kannada name
-         and the English names.
     ====================================================== -->
 
     <meta
@@ -94,6 +91,40 @@
     />
 
     <!-- =====================================================
+         WEBSITE / APP ICON
+         IMPORTANT:
+         pwa-192x192.png is now the PRIMARY favicon.
+         This is the same logo used for the installed PWA.
+    ====================================================== -->
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/pwa-192x192.png"
+    />
+
+    <!-- Fallback favicon -->
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="/pwa-192x192.png"
+    />
+
+    <!-- Apple / iPhone -->
+    <link
+      rel="apple-touch-icon"
+      sizes="192x192"
+      href="/pwa-192x192.png"
+    />
+
+    <!-- PWA Manifest -->
+    <link
+      rel="manifest"
+      href="/manifest.webmanifest"
+    />
+
+    <!-- =====================================================
          ORGANIZATION STRUCTURED DATA
     ====================================================== -->
 
@@ -115,10 +146,12 @@
 
         "logo": {
           "@type": "ImageObject",
-          "url": "https://cdn.corenexis.com/f/Q4tlN92ScN0.jpg"
+          "url": "https://netaji-team-website.vercel.app/pwa-192x192.png",
+          "width": 192,
+          "height": 192
         },
 
-        "image": "https://cdn.corenexis.com/f/Q4tlN92ScN0.jpg",
+        "image": "https://netaji-team-website.vercel.app/pwa-512x512.png",
 
         "description": "Netaji Maraliga, also known as Netaji Boys Maraliga, is the English name used on this official website for ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ, ಮರಳಿಗ, Karnataka.",
 
@@ -159,21 +192,6 @@
         "inLanguage": "kn-IN"
       }
     </script>
-
-    <!-- =====================================================
-         WEBSITE ICON
-    ====================================================== -->
-
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="/favicon.svg"
-    />
-
-    <link
-      rel="apple-touch-icon"
-      href="/pwa-192x192.png"
-    />
 
     <!-- =====================================================
          MOBILE
@@ -238,9 +256,20 @@
       content="https://netaji-team-website.vercel.app/"
     />
 
+    <!-- New team logo -->
     <meta
       property="og:image"
-      content="https://cdn.corenexis.com/f/Q4tlN92ScN0.jpg"
+      content="https://netaji-team-website.vercel.app/pwa-512x512.png"
+    />
+
+    <meta
+      property="og:image:width"
+      content="512"
+    />
+
+    <meta
+      property="og:image:height"
+      content="512"
     />
 
     <meta
@@ -279,7 +308,7 @@
 
     <meta
       name="twitter:image"
-      content="https://cdn.corenexis.com/f/Q4tlN92ScN0.jpg"
+      content="https://netaji-team-website.vercel.app/pwa-512x512.png"
     />
 
     <!-- =====================================================
