@@ -91,12 +91,20 @@
     />
 
     <!-- =====================================================
-         WEBSITE / APP ICON
+         WEBSITE FAVICON / SITE ICON
+         
          IMPORTANT:
-         pwa-192x192.png is now the PRIMARY favicon.
-         This is the same logo used for the installed PWA.
+         favicon.ico contains YOUR TEAM LOGO.
+         This is the primary favicon for browsers and
+         Google Search.
     ====================================================== -->
 
+    <link
+      rel="icon"
+      href="/favicon.ico"
+    />
+
+    <!-- PNG fallback using the same team logo -->
     <link
       rel="icon"
       type="image/png"
@@ -104,14 +112,7 @@
       href="/pwa-192x192.png"
     />
 
-    <!-- Fallback favicon -->
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="/pwa-192x192.png"
-    />
-
-    <!-- Apple / iPhone -->
+    <!-- Apple / iPhone icon -->
     <link
       rel="apple-touch-icon"
       sizes="192x192"
@@ -151,7 +152,12 @@
           "height": 192
         },
 
-        "image": "https://netaji-team-website.vercel.app/pwa-512x512.png",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://netaji-team-website.vercel.app/pwa-512x512.png",
+          "width": 512,
+          "height": 512
+        },
 
         "description": "Netaji Maraliga, also known as Netaji Boys Maraliga, is the English name used on this official website for ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ, ಮರಳಿಗ, Karnataka.",
 
@@ -256,7 +262,7 @@
       content="https://netaji-team-website.vercel.app/"
     />
 
-    <!-- New team logo -->
+    <!-- Team logo for social sharing -->
     <meta
       property="og:image"
       content="https://netaji-team-website.vercel.app/pwa-512x512.png"
