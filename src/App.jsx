@@ -1,3 +1,4 @@
+import AnalyticsTracker from './components/AnalyticsTracker'
 import Notifications from './pages/Notifications'
 import InstallAndNotification from './components/InstallAndNotification'
 
@@ -493,6 +494,7 @@ function Home() {
         </p>
 
       </section>
+
 
 
       {/* =====================================================
@@ -1279,6 +1281,15 @@ function App() {
   return (
 
     <BrowserRouter>
+
+      {/* =================================================
+          ANALYTICS TRACKER
+          Tracks page visits for the private analytics
+          dashboard. It does not display anything.
+      ================================================= */}
+
+      <AnalyticsTracker />
+
 
       <Routes>
 
