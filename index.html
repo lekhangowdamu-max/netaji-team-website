@@ -91,12 +91,13 @@
     />
 
     <!-- =====================================================
-         WEBSITE FAVICON / SITE ICON
+         GOOGLE SEARCH / WEBSITE FAVICON
          
          IMPORTANT:
-         favicon.ico contains YOUR TEAM LOGO.
-         This is the primary favicon for browsers and
-         Google Search.
+         favicon.ico MUST contain the Netaji team logo.
+
+         Google Search supports one favicon per hostname.
+         Keep this URL stable.
     ====================================================== -->
 
     <link
@@ -104,22 +105,23 @@
       href="/favicon.ico"
     />
 
-    <!-- PNG fallback using the same team logo -->
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="192x192"
-      href="/pwa-192x192.png"
-    />
+    <!-- =====================================================
+         APPLE / iPHONE ICON
+         
+         This is NOT the Google Search favicon.
+         It is used for Apple home-screen icons.
+    ====================================================== -->
 
-    <!-- Apple / iPhone icon -->
     <link
       rel="apple-touch-icon"
       sizes="192x192"
       href="/pwa-192x192.png"
     />
 
-    <!-- PWA Manifest -->
+    <!-- =====================================================
+         PWA MANIFEST
+    ====================================================== -->
+
     <link
       rel="manifest"
       href="/manifest.webmanifest"
@@ -263,6 +265,7 @@
     />
 
     <!-- Team logo for social sharing -->
+
     <meta
       property="og:image"
       content="https://netaji-team-website.vercel.app/pwa-512x512.png"
