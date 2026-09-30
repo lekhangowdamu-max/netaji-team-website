@@ -17,10 +17,10 @@ function getBrowser() {
   const userAgent = navigator.userAgent
 
   if (userAgent.includes('Edg/')) return 'Edge'
+  if (userAgent.includes('OPR/')) return 'Opera'
   if (userAgent.includes('Chrome/')) return 'Chrome'
   if (userAgent.includes('Firefox/')) return 'Firefox'
   if (userAgent.includes('Safari/')) return 'Safari'
-  if (userAgent.includes('OPR/')) return 'Opera'
 
   return 'Other'
 }
@@ -62,12 +62,62 @@ function isPWA() {
   )
 }
 
+/*
+  Get approximate visitor location using IP geolocation.
+
+  This does NOT use GPS or the user's exact address.
+  If the service fails, location values remain null.
+*/
+async function getVisitorLocation() {
+  try {
+    const response = await fetch('https://ipapi.co/json/', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error('Location request failed')
+    }
+
+    const data = await response.json()
+
+    return {
+      country: data.country_name || null,
+      region: data.region || null,
+      city: data.city || null,
+    }
+  } catch (error) {
+    console.warn(
+      'Visitor location could not be detected:',
+      error
+    )
+
+    return {
+      country: null,
+      region: null,
+      city: null,
+    }
+  }
+}
+
 export default function AnalyticsTracker() {
   const location = useLocation()
 
   useEffect(() => {
+    let cancelled = false
+
     async function trackPageView() {
       try {
+        /*
+          Get approximate location first.
+          If this fails, the page view is still recorded.
+        */
+        const visitorLocation = await getVisitorLocation()
+
+        if (cancelled) return
+
         const eventData = {
           session_id: getSessionId(),
 
@@ -84,9 +134,11 @@ export default function AnalyticsTracker() {
 
           operating_system: getOperatingSystem(),
 
-          country: null,
-          region: null,
-          city: null,
+          country: visitorLocation.country,
+
+          region: visitorLocation.region,
+
+          city: visitorLocation.city,
 
           app_version: APP_VERSION,
 
@@ -112,6 +164,10 @@ export default function AnalyticsTracker() {
     }
 
     trackPageView()
+
+    return () => {
+      cancelled = true
+    }
   }, [location.pathname, location.search])
 
   return null
