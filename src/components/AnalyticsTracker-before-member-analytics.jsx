@@ -66,6 +66,7 @@ function isPWA() {
   Get approximate visitor location using IP geolocation.
 
   This does NOT use GPS or the user's exact address.
+  If the service fails, location values remain null.
 */
 async function getVisitorLocation() {
   try {
@@ -101,132 +102,24 @@ async function getVisitorLocation() {
   }
 }
 
-/*
-  Get currently logged-in Supabase user.
-
-  Anonymous visitors return null.
-*/
-async function getCurrentUserId() {
-  try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser()
-
-    if (error) {
-      console.warn(
-        'Could not get logged-in user:',
-        error.message
-      )
-
-      return null
-    }
-
-    return user?.id || null
-  } catch (error) {
-    console.warn(
-      'User detection failed:',
-      error
-    )
-
-    return null
-  }
-}
-
-/*
-  Update member online presence.
-
-  Only authenticated users will be able to update their
-  own presence because of the RLS policies.
-*/
-async function updateMemberPresence(userId) {
-  if (!userId) return
-
-  try {
-    const { error } = await supabase
-      .from('member_presence')
-      .upsert(
-        {
-          user_id: userId,
-          last_seen_at: new Date().toISOString(),
-        },
-        {
-          onConflict: 'user_id',
-        }
-      )
-
-    if (error) {
-      console.warn(
-        'Member presence update failed:',
-        error.message
-      )
-    }
-  } catch (error) {
-    console.warn(
-      'Member presence error:',
-      error
-    )
-  }
-}
-
 export default function AnalyticsTracker() {
   const location = useLocation()
 
   useEffect(() => {
     let cancelled = false
-    let presenceInterval = null
 
     async function trackPageView() {
       try {
         /*
-          Get logged-in user.
-
-          For visitors:
-          userId = null
-
-          For team members:
-          userId = their Supabase auth ID
+          Get approximate location first.
+          If this fails, the page view is still recorded.
         */
-        const userId = await getCurrentUserId()
+        const visitorLocation = await getVisitorLocation()
 
         if (cancelled) return
 
-        /*
-          Update online status for logged-in members.
-        */
-        if (userId) {
-          await updateMemberPresence(userId)
-
-          /*
-            Keep member online while they are using
-            the website.
-
-            Every 60 seconds we update last_seen_at.
-          */
-          presenceInterval = setInterval(() => {
-            updateMemberPresence(userId)
-          }, 60 * 1000)
-        }
-
-        /*
-          Get approximate visitor location.
-        */
-        const visitorLocation =
-          await getVisitorLocation()
-
-        if (cancelled) return
-
-        /*
-          Create analytics event.
-        */
         const eventData = {
           session_id: getSessionId(),
-
-          /*
-            NULL for anonymous visitors.
-            User ID for logged-in members.
-          */
-          user_id: userId,
 
           event_type: 'page_view',
 
@@ -239,20 +132,15 @@ export default function AnalyticsTracker() {
 
           browser: getBrowser(),
 
-          operating_system:
-            getOperatingSystem(),
+          operating_system: getOperatingSystem(),
 
-          country:
-            visitorLocation.country,
+          country: visitorLocation.country,
 
-          region:
-            visitorLocation.region,
+          region: visitorLocation.region,
 
-          city:
-            visitorLocation.city,
+          city: visitorLocation.city,
 
-          app_version:
-            APP_VERSION,
+          app_version: APP_VERSION,
 
           is_pwa: isPWA(),
         }
@@ -279,10 +167,6 @@ export default function AnalyticsTracker() {
 
     return () => {
       cancelled = true
-
-      if (presenceInterval) {
-        clearInterval(presenceInterval)
-      }
     }
   }, [location.pathname, location.search])
 
