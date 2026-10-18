@@ -21,7 +21,7 @@ html {
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background: #090909;
+  background: transparent;
   color: #fff;
 }
 
@@ -41,13 +41,8 @@ select {
   width: 100%;
   min-height: 100vh;
 
-  background:
-    radial-gradient(
-      circle at 50% 20%,
-      #3b1605 0%,
-      #120a05 35%,
-      #050505 70%
-    );
+  /* Transparent so the fixed background video remains visible. */
+  background: transparent;
 
   overflow-x: hidden;
 }
@@ -553,12 +548,8 @@ footer p {
 
   padding: 70px 8%;
 
-  background:
-    radial-gradient(
-      circle at top,
-      #351405,
-      #090909 55%
-    );
+  /* Let the background video show through this page. */
+  background: transparent;
 }
 
 .members-header {
@@ -693,7 +684,8 @@ footer p {
 
   padding: 60px 8%;
 
-  background: #0b0705;
+  /* Let the background video show through this page. */
+  background: transparent;
 
   color: white;
 }
@@ -1158,7 +1150,8 @@ footer p {
 
   padding: 60px 8%;
 
-  background: #0b0705;
+  /* Let the background video show through this page. */
+  background: transparent;
 
   color: white;
 
@@ -2906,7 +2899,8 @@ button {
 .notifications-page {
   min-height: 100vh;
   padding: 40px 6%;
-  background: #0b0b0b;
+  /* Let the background video show through this page. */
+  background: transparent;
   color: #ffffff;
 }
 
@@ -3048,5 +3042,1438 @@ button {
 
   .notification-content p {
     font-size: 14px;
+  }
+}
+
+/* Keep all website pages above the fixed background video. */
+#root {
+  min-height: 100vh;
+  isolation: isolate;
+  background: transparent;
+}
+
+.app-content {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  background: transparent;
+}
+/* Improve text visibility over the background video */
+.app-content {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  background: transparent;
+  color: #ffffff;
+}
+
+/* Headings stand out clearly */
+.app-content h1,
+.app-content h2,
+.app-content h3 {
+  color: #ffd54f;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.95),
+    0 0 14px rgba(0, 0, 0, 0.7);
+}
+
+/* Paragraphs and general text */
+.app-content p,
+.app-content li,
+.app-content label {
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.9);
+}
+
+/* Keep links readable */
+.app-content a {
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.9);
+}
+
+/* Improve text contrast without changing button colors */
+.app-content button {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+/* =========================================
+   MEMBER LIST — CINEMATIC GLASS DESIGN
+========================================= */
+
+/* Keep the members page transparent */
+.members-page,
+.members-section,
+.members-container {
+  background: transparent !important;
+}
+
+/* Member cards */
+.member-card {
+  background: rgba(15, 12, 8, 0.88) !important;
+  border: 1px solid rgba(255, 193, 7, 0.65) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.65),
+    0 0 12px rgba(255, 193, 7, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Lift cards when the mouse hovers */
+.member-card:hover {
+  transform: translateY(-4px);
+  border-color: #ffd54f !important;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.75),
+    0 0 18px rgba(255, 193, 7, 0.28);
+}
+
+/* Member names */
+.member-card h2,
+.member-card h3,
+.member-card h4 {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  text-shadow: 0 2px 8px #000000;
+}
+
+/* Member role and details */
+.member-card p,
+.member-card span {
+  color: #ffd54f;
+  text-shadow: 0 1px 5px #000000;
+}
+
+/* Member profile photos */
+.member-card img {
+  border: 2px solid #ffd54f !important;
+  box-shadow: 0 0 14px rgba(255, 193, 7, 0.4);
+  object-fit: cover;
+}
+
+/* Make the members page heading stand out */
+.members-page h1,
+.members-page h2,
+.members-section h1,
+.members-section h2 {
+  color: #ffd54f;
+  text-shadow: 0 3px 12px #000000;
+}
+/* ==========================================
+   PREMIUM MEMBER CARDS
+========================================== */
+
+.members-page .member-profile {
+  position: relative;
+  overflow: hidden;
+
+  background: linear-gradient(
+    135deg,
+    rgba(24, 19, 10, 0.96),
+    rgba(8, 8, 8, 0.91)
+  ) !important;
+
+  border: 1px solid rgba(255, 193, 7, 0.7) !important;
+  border-radius: 20px !important;
+
+  padding: 22px !important;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.55),
+    inset 0 0 18px rgba(255, 193, 7, 0.06);
+
+  transition: all 0.3s ease;
+}
+
+/* Golden glow on hover */
+.members-page .member-profile:hover {
+  transform: translateY(-6px);
+  border-color: #ffe082 !important;
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.7),
+    0 0 22px rgba(255, 193, 7, 0.28);
+}
+
+/* Member profile photos */
+.members-page .member-profile-image {
+  border: 3px solid #ffd54f !important;
+  box-shadow:
+    0 0 12px rgba(255, 193, 7, 0.55),
+    0 0 25px rgba(255, 193, 7, 0.15);
+
+  flex-shrink: 0;
+}
+
+/* Member names */
+.members-page .member-info h2 {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  text-shadow: 0 2px 8px #000000;
+}
+
+/* Team member label */
+.members-page .member-role {
+  color: #ffd54f !important;
+  font-weight: 700;
+}
+
+/* Phone number */
+.members-page .member-phone {
+  color: #eeeeee !important;
+}
+
+/* Call and WhatsApp buttons */
+.members-page .member-actions a {
+  background: rgba(255, 193, 7, 0.08);
+  border: 1px solid #ffc107 !important;
+  color: #ffe082 !important;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+/* Button hover effect */
+.members-page .member-actions a:hover {
+  background: linear-gradient(135deg, #ffe082, #ffb300) !important;
+  color: #171000 !important;
+  box-shadow: 0 0 14px rgba(255, 193, 7, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Members heading */
+.members-page .members-header h1 {
+  color: #ffe082 !important;
+  text-shadow: 0 3px 15px rgba(0, 0, 0, 0.9);
+}
+
+/* Keep cards readable over bright video frames */
+.members-page .member-info {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================
+   NETAJI HOMEPAGE — PREMIUM CINEMATIC STYLE
+========================================== */
+
+/* Hero section: subtle dark glass gradient */
+.hero-section {
+  position: relative;
+  isolation: isolate;
+  min-height: 650px;
+  background: linear-gradient(
+    110deg,
+    rgba(8, 8, 8, 0.72),
+    rgba(15, 10, 3, 0.28),
+    rgba(8, 8, 8, 0.12)
+  );
+}
+
+/* Hero content */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 28px;
+  border-left: 3px solid #ffc107;
+  border-radius: 0 18px 18px 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.55),
+    rgba(0, 0, 0, 0.08)
+  );
+}
+
+/* Small welcome label */
+.small-title {
+  color: #ffd54f !important;
+  text-shadow: 0 2px 10px #000;
+  letter-spacing: 2px;
+}
+
+/* Kannada main heading */
+.hero-content h1 {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.9));
+  line-height: 1.2;
+}
+
+/* Description: readable white */
+.hero-description {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px #000;
+}
+
+/* Primary button */
+.primary-btn {
+  box-shadow: 0 5px 18px rgba(255, 174, 0, 0.28);
+}
+
+.primary-btn:hover {
+  box-shadow: 0 7px 24px rgba(255, 193, 7, 0.5);
+  transform: translateY(-3px) scale(1.03);
+}
+
+/* Secondary button */
+.secondary-btn {
+  border: 1px solid #ffd54f !important;
+  background: rgba(0, 0, 0, 0.38) !important;
+  color: #ffe082 !important;
+}
+
+.secondary-btn:hover {
+  background: #ffc107 !important;
+  color: #15100a !important;
+}
+
+/* Logo glow */
+.hero-logo img {
+  filter:
+    drop-shadow(0 0 12px rgba(255, 193, 7, 0.7))
+    drop-shadow(0 0 35px rgba(255, 120, 0, 0.3));
+  transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.hero-logo img:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 28px rgba(255, 193, 7, 0.8));
+}
+
+/* About, members, gallery and contact sections */
+.about-section,
+.members-section,
+.gallery-section,
+.contact-section {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 8, 8, 0.42),
+    rgba(8, 8, 8, 0.66)
+  ) !important;
+}
+
+/* Section headings */
+.about-section h2,
+.members-section h2,
+.gallery-section h2,
+.contact-section h2 {
+  color: #ffe082 !important;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.95);
+}
+
+/* Section descriptions */
+.about-section p,
+.members-section p,
+.gallery-section p,
+.contact-section p {
+  color: #f2f2f2;
+  text-shadow: 0 2px 7px #000;
+}
+
+/* Small section labels */
+.section-label {
+  color: #ffc107 !important;
+  text-shadow: 0 2px 8px #000;
+}
+
+/* Mobile: reduce padding and preserve readability */
+@media (max-width: 800px) {
+  .hero-section {
+    min-height: auto;
+    gap: 30px;
+    background: linear-gradient(
+      180deg,
+      rgba(5, 5, 5, 0.72),
+      rgba(5, 5, 5, 0.38)
+    );
+  }
+
+  .hero-content {
+    padding: 20px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+  }
+
+  .about-section,
+  .members-section,
+  .gallery-section,
+  .contact-section {
+    padding: 60px 20px;
+  }
+}
+/* Keep the existing video background visible */
+html,
+body,
+#root,
+.website,
+.app-content {
+  background-color: transparent;
+}
+
+/* Preserve the premium hero design */
+.hero-section {
+  background: linear-gradient(
+    115deg,
+    rgba(5, 5, 5, 0.58),
+    rgba(27, 15, 5, 0.35),
+    rgba(5, 5, 5, 0.25)
+  ) !important;
+}
+
+/* Dark translucent sections — video remains visible */
+.about-section,
+.members-section,
+.gallery-section,
+.contact-section {
+  background: rgba(10, 8, 6, 0.30) !important;
+}
+
+/* ============================================
+   NETAJI MARALIGA — CINEMATIC HOMEPAGE V2
+   Transparent backgrounds preserve video layer
+============================================ */
+
+/* Main homepage */
+.website {
+  background: transparent !important;
+  color: #fff;
+}
+
+/* HERO SECTION */
+.hero-section {
+  position: relative;
+  isolation: isolate;
+  min-height: 650px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 45px;
+  padding: 75px 8%;
+  overflow: hidden;
+
+  /* Transparent gradient: video remains visible */
+  background: linear-gradient(
+    110deg,
+    rgba(5, 5, 5, 0.58),
+    rgba(22, 12, 3, 0.22),
+    rgba(5, 5, 5, 0.12)
+  ) !important;
+
+  border-bottom: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+/* HERO TEXT CARD */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+  padding: 30px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(8, 8, 8, 0.82),
+    rgba(32, 20, 5, 0.56)
+  ) !important;
+
+  border: 1px solid rgba(255, 193, 7, 0.38);
+  border-left: 3px solid #ffc107;
+  border-radius: 5px 22px 22px 5px;
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.3),
+    inset 0 0 25px rgba(255, 193, 7, 0.035);
+
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* WELCOME LABEL */
+.small-title {
+  color: #ffd54f !important;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px #000;
+}
+
+/* KANNADA HERO TITLE */
+.hero-content h1 {
+  line-height: 1.2;
+  filter: drop-shadow(0 3px 12px rgba(0, 0, 0, 0.75));
+}
+
+/* HERO DESCRIPTION */
+.hero-description {
+  color: #fff8e8 !important;
+  line-height: 1.8;
+  text-shadow: 0 2px 6px #000;
+}
+
+/* PRIMARY BUTTON */
+.primary-btn {
+  background: linear-gradient(
+    135deg,
+    #ffe082,
+    #ffb300,
+    #d88900
+  ) !important;
+
+  color: #211300 !important;
+  border: 1px solid #ffe082;
+  font-weight: 800;
+
+  box-shadow: 0 5px 18px rgba(255, 174, 0, 0.28);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(255, 193, 7, 0.48);
+}
+
+/* SECONDARY BUTTON */
+.secondary-btn {
+  background: rgba(0, 0, 0, 0.42) !important;
+  color: #ffe082 !important;
+  border: 1px solid #ffd54f !important;
+  font-weight: 700;
+}
+
+.secondary-btn:hover {
+  background: #ffc107 !important;
+  color: #171000 !important;
+}
+
+/* LOGO */
+.hero-logo {
+  position: relative;
+  z-index: 1;
+}
+
+/* Warm halo behind logo without an opaque background */
+.hero-logo img {
+  filter:
+    drop-shadow(0 0 12px rgba(255, 193, 7, 0.65))
+    drop-shadow(0 0 35px rgba(255, 110, 0, 0.3));
+
+  transition: transform 0.35s ease;
+}
+
+.hero-logo img:hover {
+  transform: scale(1.045);
+}
+
+/* CONTENT SECTIONS — DO NOT COVER VIDEO */
+.about-section,
+.members-section,
+.gallery-section,
+.contact-section {
+  position: relative;
+  background: rgba(8, 6, 4, 0.32) !important;
+  border-bottom: 1px solid rgba(255, 193, 7, 0.18);
+}
+
+/* SECTION LABELS */
+.section-label {
+  color: #ffc107 !important;
+  text-shadow: 0 2px 8px #000;
+}
+
+/* SECTION HEADINGS */
+.about-section h2,
+.members-section h2,
+.gallery-section h2,
+.contact-section h2 {
+  color: #ffe082 !important;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9);
+}
+
+/* SECTION PARAGRAPHS */
+.about-section p,
+.members-section p,
+.gallery-section p,
+.contact-section p {
+  color: #fff4df;
+  text-shadow: 0 2px 6px #000;
+}
+
+/* KEEP MAIN WRAPPERS TRANSPARENT */
+html,
+body,
+#root,
+.app-content {
+  background-color: transparent;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 800px) {
+  .hero-section {
+    min-height: auto;
+    flex-direction: column;
+    gap: 30px;
+    padding: 55px 20px;
+    background: linear-gradient(
+      180deg,
+      rgba(5, 5, 5, 0.48),
+      rgba(5, 5, 5, 0.25)
+    ) !important;
+  }
+
+  .hero-content {
+    width: 100%;
+    padding: 22px;
+  }
+
+  .hero-logo {
+    width: 270px;
+    max-width: 75%;
+  }
+
+  .about-section,
+  .members-section,
+  .gallery-section,
+  .contact-section {
+    padding: 60px 20px;
+  }
+}
+
+/* ===============================================
+   NETAJI MARALIGA — ROYAL GOLD CINEMATIC V3
+   VIDEO-SAFE HOMEPAGE REDESIGN
+================================================ */
+
+/* Keep the video visible through main wrappers */
+html,
+body,
+#root,
+.app-content,
+.website {
+  background-color: transparent !important;
+}
+
+/* HERO: cinematic lighting over the video */
+.hero-section {
+  position: relative;
+  min-height: 680px;
+  padding: 90px 7%;
+  gap: 45px;
+
+  background:
+    radial-gradient(
+      circle at 78% 48%,
+      rgba(255, 174, 0, 0.16),
+      transparent 30%
+    ),
+    linear-gradient(
+      105deg,
+      rgba(5, 5, 5, 0.70),
+      rgba(15, 9, 3, 0.35),
+      rgba(5, 5, 5, 0.18)
+    ) !important;
+
+  border-bottom: 1px solid rgba(255, 193, 7, 0.35);
+}
+
+/* HERO: glowing premium content panel */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 35px;
+  border-radius: 4px 24px 24px 4px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(8, 7, 5, 0.88),
+    rgba(35, 22, 5, 0.64)
+  ) !important;
+
+  border: 1px solid rgba(255, 193, 7, 0.48);
+  border-left: 4px solid #ffd54f;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.38),
+    0 0 30px rgba(255, 174, 0, 0.08);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Small welcome heading */
+.small-title {
+  color: #ffe082 !important;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 800;
+  text-shadow: 0 0 15px rgba(255, 193, 7, 0.25);
+}
+
+/* Main Kannada title */
+.hero-content h1 {
+  background: linear-gradient(
+    115deg,
+    #fff5c2 0%,
+    #ffd54f 38%,
+    #ffad00 68%,
+    #fff0a6 100%
+  ) !important;
+
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+
+  line-height: 1.2;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.8));
+}
+
+/* Readable supporting text */
+.hero-description {
+  color: #fff8e8 !important;
+  line-height: 1.9;
+  text-shadow: 0 2px 6px #000;
+}
+
+/* Logo: dramatic golden halo */
+.hero-logo img {
+  filter:
+    drop-shadow(0 0 12px rgba(255, 193, 7, 0.75))
+    drop-shadow(0 0 32px rgba(255, 120, 0, 0.34));
+
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.hero-logo img:hover {
+  transform: scale(1.06) rotate(1deg);
+  filter:
+    drop-shadow(0 0 20px rgba(255, 213, 79, 0.95))
+    drop-shadow(0 0 48px rgba(255, 120, 0, 0.42));
+}
+
+/* Gold call-to-action button */
+.primary-btn {
+  color: #211400 !important;
+  font-weight: 800;
+
+  background: linear-gradient(
+    120deg,
+    #fff0a6,
+    #ffc107,
+    #e69500
+  ) !important;
+
+  border: 1px solid #ffe082 !important;
+  box-shadow: 0 6px 22px rgba(255, 174, 0, 0.25);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 10px 30px rgba(255, 193, 7, 0.48);
+}
+
+/* Glass secondary button */
+.secondary-btn {
+  color: #ffe082 !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  border: 1px solid #ffd54f !important;
+}
+
+.secondary-btn:hover {
+  color: #171000 !important;
+  background: #ffd54f !important;
+}
+
+/* Dark translucent sections: keep the video visible */
+.about-section,
+.members-section,
+.gallery-section,
+.contact-section {
+  position: relative;
+
+  background: linear-gradient(
+    180deg,
+    rgba(5, 5, 5, 0.40),
+    rgba(15, 9, 3, 0.58)
+  ) !important;
+
+  border-bottom: 1px solid rgba(255, 193, 7, 0.20);
+}
+
+/* Elegant headings */
+.about-section h2,
+.members-section h2,
+.gallery-section h2,
+.contact-section h2 {
+  color: #ffe49a !important;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.95);
+}
+
+/* Gold section labels */
+.section-label {
+  color: #ffc107 !important;
+  text-shadow: 0 0 12px rgba(255, 193, 7, 0.3);
+}
+
+/* Body copy */
+.about-section p,
+.members-section p,
+.gallery-section p,
+.contact-section p {
+  color: #f8efe0;
+  text-shadow: 0 2px 5px #000;
+}
+
+/* Member cards: rich glass effect */
+.member-profile,
+.member-card {
+  background: linear-gradient(
+    135deg,
+    rgba(18, 14, 8, 0.88),
+    rgba(8, 8, 8, 0.76)
+  ) !important;
+
+  border: 1px solid rgba(255, 193, 7, 0.42) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.30);
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.member-profile:hover,
+.member-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.42),
+    0 0 22px rgba(255, 193, 7, 0.18);
+}
+
+/* Navbar polish */
+.navbar {
+  background: rgba(5, 5, 5, 0.91) !important;
+  border-bottom: 1px solid rgba(255, 193, 7, 0.42);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Mobile adjustments */
+@media (max-width: 800px) {
+  .hero-section {
+    min-height: auto;
+    padding: 55px 20px;
+    gap: 30px;
+
+    background: linear-gradient(
+      180deg,
+      rgba(5, 5, 5, 0.60),
+      rgba(5, 5, 5, 0.32)
+    ) !important;
+  }
+
+  .hero-content {
+    padding: 22px;
+  }
+
+  .about-section,
+  .members-section,
+  .gallery-section,
+  .contact-section {
+    padding: 60px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-logo img,
+  .primary-btn {
+    transition: none !important;
+  }
+}
+
+/* =====================================================
+   NETAJI TEAM — HOLLYWOOD CINEMATIC EXPERIENCE
+   Keep the existing video background component.
+   ===================================================== */
+
+:root {
+  --movie-gold: #ffd36a;
+  --movie-orange: #ff6a00;
+  --movie-red: #8b0000;
+  --movie-white: #fff7e6;
+}
+
+/* Main cinematic hero */
+.hero-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: transparent !important;
+  min-height: 90vh;
+}
+
+/* Dramatic moving light beams */
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  z-index: 0;
+  pointer-events: none;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(255, 180, 40, 0.02) 25deg,
+    rgba(255, 190, 75, 0.25) 38deg,
+    transparent 52deg,
+    transparent 100deg,
+    rgba(255, 70, 20, 0.16) 125deg,
+    transparent 145deg,
+    transparent 220deg,
+    rgba(255, 200, 90, 0.18) 245deg,
+    transparent 265deg,
+    transparent 360deg
+  );
+  filter: blur(35px);
+  animation: netajiLightSweep 18s linear infinite;
+}
+
+/* Cinematic vignette and golden atmosphere */
+.hero-section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 50% 40%,
+      transparent 15%,
+      rgba(0, 0, 0, 0.2) 55%,
+      rgba(0, 0, 0, 0.8) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.52),
+      transparent 55%,
+      rgba(0, 0, 0, 0.25)
+    );
+}
+
+/* Keep hero content above the cinematic effects */
+.hero-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Main title — glowing movie-poster typography */
+.hero-content h1 {
+  color: var(--movie-white);
+  text-shadow:
+    0 0 5px rgba(255, 220, 150, 0.7),
+    0 0 18px rgba(255, 165, 30, 0.55),
+    0 0 45px rgba(255, 100, 0, 0.3);
+  animation: netajiTitleReveal 1.4s ease-out both;
+  letter-spacing: 1px;
+}
+
+/* Gold subtitle */
+.hero-content .small-title,
+.small-title {
+  color: var(--movie-gold);
+  text-shadow: 0 0 15px rgba(255, 170, 0, 0.65);
+  letter-spacing: 4px;
+  animation: netajiSubtitleReveal 1.5s ease-out both;
+}
+
+/* Dramatic supporting text */
+.hero-description {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95);
+  line-height: 1.9;
+  animation: netajiDescriptionReveal 1.8s ease-out both;
+}
+
+/* Logo — powerful gold aura */
+.hero-logo img {
+  filter:
+    drop-shadow(0 0 5px rgba(255, 220, 130, 0.9))
+    drop-shadow(0 0 18px rgba(255, 160, 20, 0.65))
+    drop-shadow(0 0 45px rgba(255, 80, 0, 0.35));
+  animation: netajiLogoPower 4s ease-in-out infinite;
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+
+.hero-logo img:hover {
+  transform: scale(1.06);
+  filter:
+    drop-shadow(0 0 10px #fff0b0)
+    drop-shadow(0 0 30px #ffb000)
+    drop-shadow(0 0 65px #ff4d00);
+}
+
+/* Gold cinematic buttons */
+.primary-btn,
+.secondary-btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.primary-btn {
+  border: 1px solid rgba(255, 230, 160, 0.8);
+  box-shadow:
+    0 0 15px rgba(255, 170, 0, 0.25),
+    inset 0 0 15px rgba(255, 255, 255, 0.08);
+}
+
+.primary-btn::before,
+.secondary-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateX(-130%) skewX(-25deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.45),
+    transparent
+  );
+  transition: transform 0.7s ease;
+}
+
+.primary-btn:hover::before,
+.secondary-btn:hover::before {
+  transform: translateX(130%) skewX(-25deg);
+}
+
+.primary-btn:hover,
+.secondary-btn:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 0 20px rgba(255, 180, 30, 0.4),
+    0 0 45px rgba(255, 90, 0, 0.22);
+}
+
+/* Glass-like navigation */
+nav,
+.navbar,
+header {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Dark transparent cinematic sections */
+.about-section,
+.members-section,
+.gallery-section,
+.contact-section {
+  background-color: rgba(0, 0, 0, 0.24) !important;
+  position: relative;
+}
+
+/* Gold light under section headings */
+.about-section h2,
+.members-section h2,
+.gallery-section h2,
+.contact-section h2 {
+  text-shadow:
+    0 0 10px rgba(255, 180, 40, 0.25),
+    0 0 25px rgba(255, 120, 0, 0.15);
+}
+
+/* Premium member cards */
+.member-card,
+.member-profile {
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.member-card:hover,
+.member-profile:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 194, 75, 0.75);
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.4),
+    0 0 25px rgba(255, 170, 30, 0.14);
+}
+
+/* Animations */
+@keyframes netajiLightSweep {
+  from {
+    transform: rotate(0deg) scale(1.1);
+  }
+  to {
+    transform: rotate(360deg) scale(1.1);
+  }
+}
+
+@keyframes netajiTitleReveal {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes netajiSubtitleReveal {
+  from {
+    opacity: 0;
+    transform: translateX(-25px);
+    letter-spacing: 9px;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    letter-spacing: 4px;
+  }
+}
+
+@keyframes netajiDescriptionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes netajiLogoPower {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 6px rgba(255, 220, 130, 0.65))
+      drop-shadow(0 0 20px rgba(255, 150, 20, 0.4));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 12px rgba(255, 240, 180, 0.95))
+      drop-shadow(0 0 35px rgba(255, 150, 20, 0.75))
+      drop-shadow(0 0 55px rgba(255, 60, 0, 0.3));
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 80vh;
+  }
+
+  .hero-section::before {
+    filter: blur(50px);
+    opacity: 0.7;
+  }
+
+  .hero-content h1 {
+    letter-spacing: 0;
+  }
+
+  .hero-content .small-title,
+  .small-title {
+    letter-spacing: 2px;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-section::before,
+  .hero-content h1,
+  .hero-content .small-title,
+  .hero-description,
+  .hero-logo img {
+    animation: none !important;
+  }
+
+  .primary-btn,
+  .secondary-btn,
+  .member-card,
+  .member-profile {
+    transition: none !important;
+  }
+}
+
+/* ==========================================
+   GLOBAL TEXT EFFECT — ALL APP PAGES
+   Consistent, readable, cinematic styling
+   ========================================== */
+
+:root {
+  --cinema-gold: #ffd36f;
+  --cinema-gold-light: #ffe6a6;
+  --cinema-text: #fff8eb;
+  --cinema-muted: #e4dfd5;
+  --cinema-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Apply one subtle shadow to text throughout the app */
+#root,
+#root * {
+  text-shadow: var(--cinema-shadow) !important;
+}
+
+/* All heading levels, including nested headings */
+#root h1,
+#root h2,
+#root h3,
+#root h4,
+#root h5,
+#root h6,
+#root [class*="title"],
+#root [class*="heading"] {
+  color: var(--cinema-gold) !important;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.85),
+    0 0 6px rgba(255, 190, 65, 0.12) !important;
+  filter: none !important;
+}
+
+/* Every paragraph and descriptive text */
+#root p,
+#root li,
+#root label,
+#root figcaption,
+#root blockquote,
+#root [class*="description"],
+#root [class*="subtitle"] {
+  color: var(--cinema-muted) !important;
+  text-shadow: var(--cinema-shadow) !important;
+  filter: none !important;
+}
+
+/* Navigation and links */
+#root a,
+#root nav *,
+#root header a {
+  text-shadow: var(--cinema-shadow) !important;
+}
+
+#root a:hover,
+#root nav a:hover {
+  color: var(--cinema-gold-light) !important;
+}
+
+/* Labels and small section captions */
+#root small,
+#root [class*="label"],
+#root [class*="eyebrow"] {
+  text-shadow: var(--cinema-shadow) !important;
+}
+
+/* Buttons: crisp text, no glowing letters */
+#root button,
+#root button *,
+#root input[type="button"],
+#root input[type="submit"],
+#root .primary-btn,
+#root .secondary-btn {
+  text-shadow: none !important;
+}
+
+/* Keep the team name clear */
+#root .hero-content h1 {
+  color: var(--cinema-gold-light) !important;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.85),
+    0 0 7px rgba(255, 190, 65, 0.12) !important;
+}
+
+/* Remove common text glow filters */
+#root h1,
+#root h2,
+#root h3,
+#root p,
+#root span,
+#root a,
+#root strong,
+#root em {
+  filter: none;
+}
+
+/* Preserve readable text in form controls */
+#root input,
+#root textarea,
+#root select {
+  text-shadow: none !important;
+}
+
+/* Accessible motion preference */
+@media (prefers-reduced-motion: reduce) {
+  #root *,
+  #root *::before,
+  #root *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================
+   NETAJI MARALIGA — UNIFIED CINEMATIC SECTIONS
+   ============================================ */
+
+:root {
+  --nt-gold: #ffd36f;
+  --nt-gold-soft: #ffe5a0;
+  --nt-white: #fff8ed;
+  --nt-muted: #e7e0d5;
+  --nt-border: rgba(255, 195, 70, 0.28);
+}
+
+/* Keep the video visible behind all public sections */
+.website,
+.app-content,
+.about-section,
+.members-section,
+.gallery-section,
+.contact-section,
+section {
+  background-color: transparent;
+}
+
+/* Consistent section appearance */
+.about-section,
+.members-section,
+.gallery-section,
+.contact-section,
+.official-website-section {
+  position: relative;
+  isolation: isolate;
+  border-top: 1px solid var(--nt-border);
+  color: var(--nt-white);
+}
+
+/* Gentle dark overlay for text readability */
+.about-section::before,
+.members-section::before,
+.gallery-section::before,
+.contact-section::before,
+.official-website-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(7, 6, 5, 0.30),
+    rgba(7, 6, 5, 0.48)
+  );
+}
+
+/* All section headings use one consistent gold style */
+.about-section h1,
+.about-section h2,
+.about-section h3,
+.members-section h1,
+.members-section h2,
+.members-section h3,
+.gallery-section h1,
+.gallery-section h2,
+.gallery-section h3,
+.contact-section h1,
+.contact-section h2,
+.contact-section h3,
+.official-website-section h1,
+.official-website-section h2,
+.official-website-section h3 {
+  color: var(--nt-gold) !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.75) !important;
+  filter: none !important;
+}
+
+/* Small labels such as ABOUT US and OUR TEAM */
+.section-label,
+.small-title,
+.eyebrow,
+.section-subtitle {
+  color: var(--nt-gold-soft) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+  letter-spacing: 2px;
+}
+
+/* Descriptions and body copy */
+.about-section p,
+.members-section p,
+.gallery-section p,
+.contact-section p,
+.official-website-section p {
+  color: var(--nt-muted) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+  filter: none !important;
+  line-height: 1.8;
+}
+
+/* Smooth gold dividers */
+.about-section,
+.members-section,
+.gallery-section,
+.contact-section,
+.official-website-section {
+  border-bottom: 1px solid rgba(255, 195, 70, 0.16);
+}
+
+/* Scroll reveal: hidden until entering the viewport */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(34px);
+  filter: blur(3px);
+  transition:
+    opacity 750ms ease,
+    transform 750ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 750ms ease;
+  will-change: opacity, transform, filter;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+/* Optional stagger for content inside each revealed section */
+.reveal-on-scroll.is-visible h2 {
+  animation: ntHeadingReveal 650ms ease both;
+}
+
+.reveal-on-scroll.is-visible p {
+  animation: ntTextReveal 800ms ease both;
+}
+
+@keyframes ntHeadingReveal {
+  from {
+    opacity: 0.65;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ntTextReveal {
+  from {
+    opacity: 0.7;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll,
+  .reveal-on-scroll.is-visible,
+  .reveal-on-scroll.is-visible h2,
+  .reveal-on-scroll.is-visible p {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }

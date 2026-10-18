@@ -1,3 +1,4 @@
+import VideoBackground from "./VideoBackground";
 import AnalyticsTracker from './components/AnalyticsTracker'
 import Notifications from './pages/Notifications'
 import InstallAndNotification from './components/InstallAndNotification'
@@ -1282,6 +1283,12 @@ function App() {
 
     <BrowserRouter>
 
+      {/* Animated video background shared by every route */}
+      <VideoBackground />
+
+      {/* Keep all page content above the background video */}
+      <div style={{ position: 'relative', zIndex: 1 }}>
+
       {/* =================================================
           ANALYTICS TRACKER
           Tracks page visits for the private analytics
@@ -1473,6 +1480,8 @@ function App() {
 
 
       </Routes>
+
+      </div>
 
     </BrowserRouter>
 
