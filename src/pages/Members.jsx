@@ -6,380 +6,222 @@ function Members() {
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [accessRole, setAccessRole] = useState('visitor')
   const [deletingId, setDeletingId] = useState(null)
 
+  const canSeeDetails = accessRole === 'admin' || accessRole === 'member'
+  const isAdmin = accessRole === 'admin'
+
   useEffect(() => {
-    fetchMembers()
-    checkAdmin()
+    let active = true
+
+    async function refreshMembers() {
+      await loadMembers(() => active)
+    }
+
+    refreshMembers()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      refreshMembers()
+    })
+
+    return () => {
+      active = false
+      subscription.unsubscribe()
+    }
   }, [])
 
-  // ==========================================
-  // FETCH MEMBERS
-  // ==========================================
-
-  async function fetchMembers() {
+  async function loadMembers(isActive = () => true) {
+    if (!isActive()) return
     setLoading(true)
+    setError('')
 
-    const { data, error } = await supabase
-      .from('members')
-      .select('*')
-      .order('id', { ascending: true })
+    try {
+      const {
+  data: { user },
+  error: authError,
+} = await supabase.auth.getUser()
 
-    if (error) {
-      console.error('Error loading members:', error)
-      setError(error.message)
-    } else {
-      console.log('MEMBERS FROM DATABASE:', data)
+// A missing session is normal for public visitors.
+if (
+  authError &&
+  authError.name !== 'AuthSessionMissingError'
+) {
+  throw authError
+}
 
-      data?.forEach((member) => {
-        console.log(
-          `MEMBER ${member.id} PHOTO:`,
-          member.profile_image
-        )
-      })
+      let role = 'visitor'
+      if (user) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .maybeSingle()
+
+        if (profileError) throw profileError
+        if (profile?.role === 'admin' || profile?.role === 'member') {
+          role = profile.role
+        }
+      }
+
+      if (!isActive()) return
+      setAccessRole(role)
+
+      // Public visitors can request only profile pictures from the safe view.
+      const query = role === 'visitor'
+        ? supabase
+            .from('member_public_profiles')
+            .select('id, profile_image')
+            .order('id', { ascending: true })
+        : supabase
+            .from('members')
+            .select('*')
+            .order('id', { ascending: true })
+
+      const { data, error: membersError } = await query
+      if (membersError) throw membersError
+      if (!isActive()) return
 
       setMembers(data || [])
       setError('')
-    }
-
-    setLoading(false)
-  }
-
-  // ==========================================
-  // CHECK ADMIN
-  // ==========================================
-
-  async function checkAdmin() {
-    try {
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser()
-
-      if (userError || !user) {
-        setIsAdmin(false)
-        return
-      }
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .maybeSingle()
-
-      if (error) {
-        console.error(
-          'Admin profile check error:',
-          error
-        )
-
-        setIsAdmin(false)
-        return
-      }
-
-      setIsAdmin(data?.role === 'admin')
-
-    } catch (error) {
-      console.error(
-        'Admin check error:',
-        error
-      )
-
-      setIsAdmin(false)
+    } catch (err) {
+      console.error('Error loading members:', err)
+      if (!isActive()) return
+      setError(err.message || 'Unable to load members.')
+      setMembers([])
+    } finally {
+      if (isActive()) setLoading(false)
     }
   }
-
-  // ==========================================
-  // DELETE MEMBER
-  // ==========================================
 
   async function deleteMember(member) {
+    if (!isAdmin) return
+
     const confirmed = window.confirm(
       `Are you sure you want to remove ${member.name} from the team?`
     )
-
-    if (!confirmed) {
-      return
-    }
+    if (!confirmed) return
 
     setDeletingId(member.id)
     setError('')
 
     try {
-      const { error } = await supabase
+      const { error: deleteError } = await supabase
         .from('members')
         .delete()
         .eq('id', member.id)
 
-      if (error) {
-        console.error(
-          'Delete member error:',
-          error
-        )
-
-        throw error
-      }
-
-      setMembers((currentMembers) =>
-        currentMembers.filter(
-          (item) => item.id !== member.id
-        )
-      )
-
-      alert(
-        `${member.name} has been removed from the team.`
-      )
-
-    } catch (error) {
-      console.error(
-        'Delete member error:',
-        error
-      )
-
-      setError(
-        `Unable to delete member: ${error.message}`
-      )
-
+      if (deleteError) throw deleteError
+      setMembers((current) => current.filter((item) => item.id !== member.id))
+      window.alert(`${member.name} has been removed from the team.`)
+    } catch (err) {
+      console.error('Delete member error:', err)
+      setError(`Unable to delete member: ${err.message}`)
     } finally {
       setDeletingId(null)
     }
   }
 
-  // ==========================================
-  // IMAGE ERROR HANDLER
-  // ==========================================
-
-  function handleImageError(e, member) {
-    console.error(
-      'MEMBER PHOTO FAILED TO LOAD:',
-      member.profile_image
-    )
-
-    console.error(
-      'MEMBER:',
-      member.name,
-      'ID:',
-      member.id
-    )
-
-    // Show team logo if member photo cannot load
-    e.currentTarget.src = teamLogo
+  function handleImageError(event) {
+    event.currentTarget.onerror = null
+    event.currentTarget.src = teamLogo
   }
-
-  // ==========================================
-  // LOADING
-  // ==========================================
 
   if (loading) {
     return (
       <div className="members-page">
-
         <div className="members-header">
-
-          <h1>
-            ನಮ್ಮ ತಂಡದ ಸದಸ್ಯರು
-          </h1>
-
-          <p>
-            Loading...
-          </p>
-
+          <h1>ನಮ್ಮ ತಂಡದ ಸದಸ್ಯರು</h1>
+          <p>Loading...</p>
         </div>
-
       </div>
     )
   }
 
-  // ==========================================
-  // PAGE
-  // ==========================================
-
   return (
     <div className="members-page">
-
-      {/* HEADER */}
-
       <div className="members-header">
-
-        <h1>
-          ನಮ್ಮ ತಂಡದ ಸದಸ್ಯರು
-        </h1>
-
-        <p>
-          ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ
-        </p>
-
+        <h1>ನಮ್ಮ ತಂಡದ ಸದಸ್ಯರು</h1>
+        <p>ನೆತಾಜಿ ಸುಭಾಷ್ ಚಂದ್ರ ಬೋಸ್ ಯುವಕರ ಸಂಘ</p>
       </div>
 
-      {/* ERROR */}
-
       {error && (
-        <p
-          style={{
-            color: '#ff6b6b',
-            textAlign: 'center',
-            marginBottom: '20px',
-          }}
-        >
+        <p role="alert" style={{ color: '#ff6b6b', textAlign: 'center', marginBottom: 20 }}>
           {error}
         </p>
       )}
 
-      {/* NO MEMBERS */}
-
       {members.length === 0 && !error && (
-        <p
-          style={{
-            color: '#aaa',
-            textAlign: 'center',
-          }}
-        >
+        <p style={{ color: '#aaa', textAlign: 'center' }}>
           ಇನ್ನೂ ಯಾವುದೇ ಸದಸ್ಯರನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ.
         </p>
       )}
 
-      {/* MEMBERS */}
-
-      <div className="members-list">
-
+      <div
+  className={`members-list ${
+    canSeeDetails ? 'members-authorized' : 'members-visitor-gallery'
+  }`}
+>
         {members.map((member) => (
-
           <div
-            className="member-profile"
-            key={member.id}
-          >
-
-            {/* ================================= */}
-            {/* MEMBER IMAGE */}
-            {/* ================================= */}
-
+  className={`member-profile ${
+    canSeeDetails ? 'member-details-card' : 'visitor-dp-item'
+  }`}
+  key={member.id}
+>
             <img
-              src={
-                member.profile_image
-                  ? member.profile_image
-                  : teamLogo
-              }
-              alt={member.name}
+              src={member.profile_image || teamLogo}
+              alt={canSeeDetails ? (member.name || 'Team member') : 'Team member profile picture'}
               className="member-profile-image"
-              onError={(e) =>
-                handleImageError(e, member)
-              }
+              onError={handleImageError}
             />
 
-            {/* ================================= */}
-            {/* MEMBER INFORMATION */}
-            {/* ================================= */}
+            {canSeeDetails && (
+              <div className="member-info">
+                <h2>{member.name}</h2>
+                {member.role && <p className="member-role">{member.role}</p>}
+                {member.phone && <p className="member-phone">📞 {member.phone}</p>}
 
-            <div className="member-info">
-
-              <h2>
-                {member.name}
-              </h2>
-
-              <p className="member-role">
-                {member.role}
-              </p>
-
-              {/* PHONE */}
-
-              {member.phone && (
-                <p className="member-phone">
-                  📞 {member.phone}
-                </p>
-              )}
-
-              {/* ACTIONS */}
-
-              <div className="member-actions">
-
-                {/* CALL */}
-
-                {member.phone && (
-                  <a
-                    href={`tel:${member.phone}`}
-                  >
-                    📞 Call
-                  </a>
-                )}
-
-                {/* WHATSAPP */}
-
-                {member.whatsapp && (
-                  <a
-                    href={`https://wa.me/91${member.whatsapp}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    💬 WhatsApp
-                  </a>
-                )}
-
-                {/* ADMIN ONLY */}
-
-                {isAdmin && (
-                  <>
-
-                    {/* EDIT */}
-
+                <div className="member-actions">
+                  {member.phone && <a href={`tel:${member.phone}`}>📞 Call</a>}
+                  {member.whatsapp && (
                     <a
-                      href={`/edit-member/${member.id}`}
+                      href={`https://wa.me/91${String(member.whatsapp).replace(/\D/g, '').replace(/^91/, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      ✏️ Edit
+                      💬 WhatsApp
                     </a>
+                  )}
 
-                    {/* DELETE */}
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        deleteMember(member)
-                      }
-                      disabled={
-                        deletingId === member.id
-                      }
-                      style={{
-                        background:
-                          deletingId === member.id
-                            ? '#555'
-                            : '#dc3545',
-
-                        color: '#fff',
-
-                        border: 'none',
-
-                        padding: '8px 12px',
-
-                        borderRadius: '6px',
-
-                        cursor:
-                          deletingId === member.id
-                            ? 'not-allowed'
-                            : 'pointer',
-
-                        fontSize: '14px',
-
-                        fontWeight: '600',
-                      }}
-                    >
-                      {deletingId === member.id
-                        ? 'Deleting...'
-                        : '🗑️ Delete'}
-                    </button>
-
-                  </>
-                )}
-
+                  {isAdmin && (
+                    <>
+                      <a href={`/edit-member/${member.id}`}>✏️ Edit</a>
+                      <button
+                        type="button"
+                        onClick={() => deleteMember(member)}
+                        disabled={deletingId === member.id}
+                        style={{
+                          background: deletingId === member.id ? '#555' : '#dc3545',
+                          color: '#fff',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: 6,
+                          cursor: deletingId === member.id ? 'not-allowed' : 'pointer',
+                          fontSize: 14,
+                          fontWeight: 600,
+                        }}
+                      >
+                        {deletingId === member.id ? 'Deleting...' : '🗑️ Delete'}
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
-
-            </div>
-
+            )}
           </div>
-
         ))}
-
       </div>
-
     </div>
   )
 }

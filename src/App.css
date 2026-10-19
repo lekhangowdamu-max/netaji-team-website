@@ -7561,3 +7561,454 @@ button {
     will-change: auto;
   }
 }
+```css
+/* =========================================
+   PUBLIC VISITOR: PROFILE PICTURES ONLY
+   ========================================= */
+
+.members-list.members-visitor-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  width: min(100% - 32px, 1000px);
+  margin: 35px auto;
+  padding: 20px 0;
+  justify-items: center;
+  align-items: center;
+}
+
+/* Remove the existing black-and-gold card appearance */
+.members-visitor-gallery .visitor-dp-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Medium-large round DP */
+.members-visitor-gallery .member-profile-image {
+  display: block;
+  width: 112px;
+  height: 112px;
+  min-width: 112px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  border: 3px solid #e9bd35;
+  box-shadow: 0 0 14px rgba(233, 189, 53, 0.45);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.members-visitor-gallery .member-profile-image:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 22px rgba(233, 189, 53, 0.75);
+}
+
+/* Responsive layout */
+@media (max-width: 700px) {
+  .members-list.members-visitor-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 12px;
+  }
+
+  .members-visitor-gallery .member-profile-image {
+    width: 96px;
+    height: 96px;
+    min-width: 96px;
+  }
+}
+
+@media (max-width: 420px) {
+  .members-list.members-visitor-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px 8px;
+  }
+
+  .members-visitor-gallery .member-profile-image {
+    width: 78px;
+    height: 78px;
+    min-width: 78px;
+  }
+}
+/* PUBLIC VISITOR: PROFILE PICTURES ONLY */
+
+.members-page .members-list.members-visitor-gallery {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 30px !important;
+  width: min(100% - 32px, 1000px) !important;
+  margin: 35px auto !important;
+  padding: 20px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.members-page .members-visitor-gallery .visitor-dp-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.members-page .members-visitor-gallery .member-profile-image {
+  display: block !important;
+  width: 112px !important;
+  height: 112px !important;
+  min-width: 112px !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 50% !important;
+  border: 3px solid #e9bd35 !important;
+  box-shadow: 0 0 14px rgba(233, 189, 53, 0.45) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.members-page .members-visitor-gallery .member-profile-image:hover {
+  transform: scale(1.07) !important;
+  box-shadow: 0 0 22px rgba(233, 189, 53, 0.75) !important;
+}
+
+@media (max-width: 700px) {
+  .members-page .members-list.members-visitor-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 22px 12px !important;
+  }
+
+  .members-page .members-visitor-gallery .member-profile-image {
+    width: 96px !important;
+    height: 96px !important;
+    min-width: 96px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .members-page .members-list.members-visitor-gallery {
+    gap: 18px 8px !important;
+  }
+
+  .members-page .members-visitor-gallery .member-profile-image {
+    width: 78px !important;
+    height: 78px !important;
+    min-width: 78px !important;
+  }
+}
+/* =========================================
+   NETAJI TEAM — PUBLIC VISITOR DP GALLERY
+   Animated, responsive profile-picture layout
+   ========================================= */
+
+.members-page .members-list.members-visitor-gallery {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 30px !important;
+  width: min(100% - 32px, 1000px) !important;
+  margin: 35px auto !important;
+  padding: 24px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  justify-items: center !important;
+  align-items: center !important;
+}
+
+/* Strip card styles only from the public visitor layout */
+.members-page .members-visitor-gallery .visitor-dp-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  animation: visitor-dp-enter 650ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+/* Stagger the entrance for a modern gallery feel */
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n + 1) { animation-delay: 40ms; }
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n + 2) { animation-delay: 100ms; }
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n + 3) { animation-delay: 160ms; }
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n + 4) { animation-delay: 220ms; }
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n + 5) { animation-delay: 280ms; }
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n) { animation-delay: 340ms; }
+
+.members-page .members-visitor-gallery .member-profile-image {
+  display: block !important;
+  width: 112px !important;
+  height: 112px !important;
+  min-width: 112px !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 50% !important;
+  border: 3px solid #e9bd35 !important;
+  background: #17130a !important;
+  box-shadow: 0 0 0 4px rgba(233, 189, 53, .10), 0 0 18px rgba(233, 189, 53, .35) !important;
+  transform: translateZ(0);
+  transition: transform 300ms cubic-bezier(.2,.8,.2,1), box-shadow 300ms ease, border-color 300ms ease !important;
+  animation: visitor-dp-glow 3.8s ease-in-out infinite;
+}
+
+.members-page .members-visitor-gallery .visitor-dp-item:hover .member-profile-image,
+.members-page .members-visitor-gallery .member-profile-image:focus-visible {
+  transform: translateY(-5px) scale(1.08) !important;
+  border-color: #fff0a0 !important;
+  box-shadow: 0 0 0 6px rgba(233, 189, 53, .14), 0 0 30px rgba(255, 207, 64, .72) !important;
+}
+
+@keyframes visitor-dp-enter {
+  from { opacity: 0; transform: translateY(22px) scale(.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes visitor-dp-glow {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(233, 189, 53, .08), 0 0 14px rgba(233, 189, 53, .28); }
+  50% { box-shadow: 0 0 0 5px rgba(233, 189, 53, .15), 0 0 23px rgba(255, 207, 64, .48); }
+}
+
+@media (max-width: 700px) {
+  .members-page .members-list.members-visitor-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 24px 12px !important;
+  }
+
+  .members-page .members-visitor-gallery .member-profile-image {
+    width: 96px !important;
+    height: 96px !important;
+    min-width: 96px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .members-page .members-list.members-visitor-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 20px 8px !important;
+  }
+
+  .members-page .members-visitor-gallery .member-profile-image {
+    width: 78px !important;
+    height: 78px !important;
+    min-width: 78px !important;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .members-page .members-visitor-gallery .visitor-dp-item,
+  .members-page .members-visitor-gallery .member-profile-image {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+/* =========================================
+   NETAJI TEAM — PREMIUM PUBLIC DP GALLERY
+   Gold orbit • shimmer • entrance • hover lift
+   ========================================= */
+
+.members-page .members-list.members-visitor-gallery {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 34px !important;
+  width: min(100% - 32px, 1000px) !important;
+  margin: 35px auto !important;
+  padding: 24px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  justify-items: center !important;
+  align-items: center !important;
+}
+
+/* Wrapper stays transparent: no cards for public visitors */
+.members-page .members-visitor-gallery .visitor-dp-item {
+  position: relative !important;
+  isolation: isolate;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 126px !important;
+  height: 126px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+  animation: visitor-dp-enter 700ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+/* Rotating gold orbit ring */
+.members-page .members-visitor-gallery .visitor-dp-item::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  z-index: -1;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 215, 90, .15) 45deg,
+    #fff0a0 95deg,
+    #d99b16 145deg,
+    transparent 205deg,
+    rgba(255, 215, 90, .18) 270deg,
+    #f5d66b 325deg,
+    transparent 360deg
+  );
+  opacity: .8;
+  animation: visitor-dp-orbit 7s linear infinite;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+}
+
+/* Tiny ambient sparkle behind each portrait */
+.members-page .members-visitor-gallery .visitor-dp-item::after {
+  content: "✦";
+  position: absolute;
+  top: 3px;
+  right: 1px;
+  z-index: 2;
+  color: #ffe58a;
+  font-size: 17px;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(255, 213, 72, .95);
+  pointer-events: none;
+  animation: visitor-dp-sparkle 2.4s ease-in-out infinite;
+}
+
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n + 1) { animation-delay: 30ms; }
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n + 2) { animation-delay: 100ms; }
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n + 3) { animation-delay: 170ms; }
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n + 4) { animation-delay: 240ms; }
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n + 5) { animation-delay: 310ms; }
+.members-page .members-visitor-gallery .visitor-dp-item:nth-child(6n) { animation-delay: 380ms; }
+
+.members-page .members-visitor-gallery .member-profile-image {
+  position: relative !important;
+  z-index: 1 !important;
+  display: block !important;
+  width: 112px !important;
+  height: 112px !important;
+  min-width: 112px !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 50% !important;
+  border: 3px solid #e9bd35 !important;
+  background: #17130a !important;
+  box-shadow: 0 0 0 4px rgba(233, 189, 53, .10), 0 0 18px rgba(233, 189, 53, .38) !important;
+  transform: translateZ(0);
+  transition: transform 350ms cubic-bezier(.2,.8,.2,1), box-shadow 350ms ease, border-color 350ms ease, filter 350ms ease !important;
+  animation: visitor-dp-glow 3.8s ease-in-out infinite;
+}
+
+.members-page .members-visitor-gallery .visitor-dp-item:hover .member-profile-image,
+.members-page .members-visitor-gallery .member-profile-image:focus-visible {
+  transform: translateY(-5px) scale(1.08) rotate(2deg) !important;
+  border-color: #fff4b7 !important;
+  filter: saturate(1.12) brightness(1.06);
+  box-shadow: 0 0 0 6px rgba(233, 189, 53, .16), 0 0 32px rgba(255, 207, 64, .78) !important;
+}
+
+.members-page .members-visitor-gallery .visitor-dp-item:hover::before {
+  animation-duration: 2.2s;
+  opacity: 1;
+}
+
+.members-page .members-visitor-gallery .visitor-dp-item:hover::after {
+  color: #fff;
+  transform: scale(1.25);
+}
+
+@keyframes visitor-dp-enter {
+  from { opacity: 0; transform: translateY(24px) scale(.88); filter: blur(3px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes visitor-dp-orbit {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes visitor-dp-sparkle {
+  0%, 100% { opacity: .45; transform: scale(.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.15) rotate(18deg); }
+}
+
+@keyframes visitor-dp-glow {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(233, 189, 53, .08), 0 0 14px rgba(233, 189, 53, .28); }
+  50% { box-shadow: 0 0 0 5px rgba(233, 189, 53, .17), 0 0 24px rgba(255, 207, 64, .52); }
+}
+
+@media (max-width: 700px) {
+  .members-page .members-list.members-visitor-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 24px 12px !important;
+  }
+  .members-page .members-visitor-gallery .visitor-dp-item {
+    width: 108px !important;
+    height: 108px !important;
+  }
+  .members-page .members-visitor-gallery .member-profile-image {
+    width: 96px !important;
+    height: 96px !important;
+    min-width: 96px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .members-page .members-list.members-visitor-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 18px 6px !important;
+  }
+  .members-page .members-visitor-gallery .visitor-dp-item {
+    width: 88px !important;
+    height: 88px !important;
+  }
+  .members-page .members-visitor-gallery .member-profile-image {
+    width: 78px !important;
+    height: 78px !important;
+    min-width: 78px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .members-page .members-visitor-gallery .visitor-dp-item,
+  .members-page .members-visitor-gallery .visitor-dp-item::before,
+  .members-page .members-visitor-gallery .visitor-dp-item::after,
+  .members-page .members-visitor-gallery .member-profile-image {
+    animation: none !important;
+    transition: none !important;
+  }
+}

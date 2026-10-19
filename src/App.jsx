@@ -1,5 +1,7 @@
+import CinematicEffects from "./components/CinematicEffects";
+import "./components/CinematicEffects.css";
+import ScrollReveal from "./ScrollReveal";
 import VideoBackground from "./VideoBackground";
-import ScrollReveal from './ScrollReveal';
 import AnalyticsTracker from './components/AnalyticsTracker'
 import Notifications from './pages/Notifications'
 import InstallAndNotification from './components/InstallAndNotification'
@@ -1284,9 +1286,12 @@ function App() {
 
     <BrowserRouter>
 
+      {/* Global cinematic scroll effects; keep inside the app router */}
+      <CinematicEffects />
+      <ScrollReveal />
+
       {/* Animated video background shared by every route */}
       <VideoBackground />
-      <ScrollReveal />
 
       {/* Keep all page content above the background video */}
       <div style={{ position: 'relative', zIndex: 1 }}>
