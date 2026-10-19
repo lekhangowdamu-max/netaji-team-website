@@ -1,4 +1,5 @@
 import VideoBackground from "./VideoBackground";
+import ScrollReveal from './ScrollReveal';
 import AnalyticsTracker from './components/AnalyticsTracker'
 import Notifications from './pages/Notifications'
 import InstallAndNotification from './components/InstallAndNotification'
@@ -1285,9 +1286,46 @@ function App() {
 
       {/* Animated video background shared by every route */}
       <VideoBackground />
+      <ScrollReveal />
 
       {/* Keep all page content above the background video */}
       <div style={{ position: 'relative', zIndex: 1 }}>
+
+        {/* Make page wrappers transparent so the video behind them can be seen.
+            Existing text, buttons, routes, and functionality remain unchanged. */}
+        <style>{`
+          html, body, #root {
+            background: transparent !important;
+          }
+
+          .website {
+            position: relative;
+            background: transparent !important;
+          }
+
+          .hero-section,
+          .about-section,
+          .members-section,
+          .contact-section,
+          .seo-section,
+          .login-section,
+          footer {
+            background-color: transparent !important;
+          }
+
+          .video-background {
+            position: fixed !important;
+            inset: 0 !important;
+            z-index: 0 !important;
+            pointer-events: none !important;
+          }
+
+          .video-background video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+          }
+        `}</style>
 
       {/* =================================================
           ANALYTICS TRACKER
