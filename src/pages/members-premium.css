@@ -901,3 +901,57 @@
   .members-list-view .member-image-frame { width: 100%; max-width: 180px; }
   .members-list-view .member-info { padding-top: 5px; }
 }
+
+/* Public visitors: show profile pictures only */
+.members-page .members-visitor-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  width: min(100% - 32px, 1000px);
+  margin: 35px auto;
+  padding: 20px 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.members-page .members-visitor-gallery .visitor-dp-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.members-page .members-visitor-gallery .member-image-frame {
+  width: 112px;
+  height: 112px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 3px solid #e9bd35;
+  box-shadow: 0 0 14px rgba(233, 189, 53, 0.45);
+}
+
+.members-page .members-visitor-gallery .member-profile-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+@media (max-width: 700px) {
+  .members-page .members-visitor-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 12px;
+  }
+
+  .members-page .members-visitor-gallery .member-image-frame {
+    width: 96px;
+    height: 96px;
+  }
+}

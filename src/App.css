@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    GLOBAL
 ========================================================= */
 
@@ -3094,7 +3094,7 @@ button {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 /* =========================================
-   MEMBER LIST — CINEMATIC GLASS DESIGN
+   MEMBER LIST â€” CINEMATIC GLASS DESIGN
 ========================================= */
 
 /* Keep the members page transparent */
@@ -3251,7 +3251,7 @@ button {
 }
 
 /* ==========================================
-   NETAJI HOMEPAGE — PREMIUM CINEMATIC STYLE
+   NETAJI HOMEPAGE â€” PREMIUM CINEMATIC STYLE
 ========================================== */
 
 /* Hero section: subtle dark glass gradient */
@@ -3418,7 +3418,7 @@ body,
   ) !important;
 }
 
-/* Dark translucent sections — video remains visible */
+/* Dark translucent sections â€” video remains visible */
 .about-section,
 .members-section,
 .gallery-section,
@@ -3427,7 +3427,7 @@ body,
 }
 
 /* ============================================
-   NETAJI MARALIGA — CINEMATIC HOMEPAGE V2
+   NETAJI MARALIGA â€” CINEMATIC HOMEPAGE V2
    Transparent backgrounds preserve video layer
 ============================================ */
 
@@ -3560,7 +3560,7 @@ body,
   transform: scale(1.045);
 }
 
-/* CONTENT SECTIONS — DO NOT COVER VIDEO */
+/* CONTENT SECTIONS â€” DO NOT COVER VIDEO */
 .about-section,
 .members-section,
 .gallery-section,
@@ -3635,7 +3635,7 @@ body,
 }
 
 /* ===============================================
-   NETAJI MARALIGA — ROYAL GOLD CINEMATIC V3
+   NETAJI MARALIGA â€” ROYAL GOLD CINEMATIC V3
    VIDEO-SAFE HOMEPAGE REDESIGN
 ================================================ */
 
@@ -3885,7 +3885,7 @@ body,
 }
 
 /* =====================================================
-   NETAJI TEAM — HOLLYWOOD CINEMATIC EXPERIENCE
+   NETAJI TEAM â€” HOLLYWOOD CINEMATIC EXPERIENCE
    Keep the existing video background component.
    ===================================================== */
 
@@ -3958,7 +3958,7 @@ body,
   z-index: 1;
 }
 
-/* Main title — glowing movie-poster typography */
+/* Main title â€” glowing movie-poster typography */
 .hero-content h1 {
   color: var(--movie-white);
   text-shadow:
@@ -3986,7 +3986,7 @@ body,
   animation: netajiDescriptionReveal 1.8s ease-out both;
 }
 
-/* Logo — powerful gold aura */
+/* Logo â€” powerful gold aura */
 .hero-logo img {
   filter:
     drop-shadow(0 0 5px rgba(255, 220, 130, 0.9))
@@ -4198,7 +4198,7 @@ header {
 }
 
 /* ==========================================
-   GLOBAL TEXT EFFECT — ALL APP PAGES
+   GLOBAL TEXT EFFECT â€” ALL APP PAGES
    Consistent, readable, cinematic styling
    ========================================== */
 
@@ -4312,7 +4312,7 @@ header {
 }
 
 /* ============================================
-   NETAJI MARALIGA — UNIFIED CINEMATIC SECTIONS
+   NETAJI MARALIGA â€” UNIFIED CINEMATIC SECTIONS
    ============================================ */
 
 :root {
@@ -7561,7 +7561,6 @@ button {
     will-change: auto;
   }
 }
-```css
 /* =========================================
    PUBLIC VISITOR: PROFILE PICTURES ONLY
    ========================================= */
@@ -7713,7 +7712,7 @@ button {
   }
 }
 /* =========================================
-   NETAJI TEAM — PUBLIC VISITOR DP GALLERY
+   NETAJI TEAM â€” PUBLIC VISITOR DP GALLERY
    Animated, responsive profile-picture layout
    ========================================= */
 
@@ -7828,8 +7827,8 @@ button {
   }
 }
 /* =========================================
-   NETAJI TEAM — PREMIUM PUBLIC DP GALLERY
-   Gold orbit • shimmer • entrance • hover lift
+   NETAJI TEAM â€” PREMIUM PUBLIC DP GALLERY
+   Gold orbit â€¢ shimmer â€¢ entrance â€¢ hover lift
    ========================================= */
 
 .members-page .members-list.members-visitor-gallery {
@@ -7893,7 +7892,7 @@ button {
 
 /* Tiny ambient sparkle behind each portrait */
 .members-page .members-visitor-gallery .visitor-dp-item::after {
-  content: "✦";
+  content: "âœ¦";
   position: absolute;
   top: 3px;
   right: 1px;
