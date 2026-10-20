@@ -1,12 +1,14 @@
+import VideoBackground from "./VideoBackground";
+import './styles/royal-theme.css';
 import CinematicEffects from "./components/CinematicEffects";
 import "./components/CinematicEffects.css";
 import ScrollReveal from "./ScrollReveal";
-import VideoBackground from "./VideoBackground";
 import AnalyticsTracker from './components/AnalyticsTracker'
 import Notifications from './pages/Notifications'
 import InstallAndNotification from './components/InstallAndNotification'
 
 import { useState, useEffect } from 'react'
+
 
 import {
   BrowserRouter,
@@ -49,6 +51,7 @@ const INSTAGRAM_URL =
 ===================================================== */
 
 function Home() {
+  
 
   const navigate = useNavigate()
 
@@ -112,32 +115,31 @@ function Home() {
 
     try {
 
-      const {
-        data,
-        error,
-      } =
-        await supabase.auth.getUser()
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession()
 
+      const session = sessionData?.session
 
-      if (
-        error ||
-        !data?.user
-      ) {
-
+      if (sessionError || !session?.user) {
         setUser(null)
         setUserRole('')
         setLoadingUser(false)
-
         return
-
       }
 
+      // Supabase automatically refreshes a refreshable session. If the stored
+      // session is expired/invalid, clear it and show the public homepage.
+      const { data, error } = await supabase.auth.getUser()
+      if (error || !data?.user) {
+        await supabase.auth.signOut().catch(() => {})
+        setUser(null)
+        setUserRole('')
+        setLoadingUser(false)
+        return
+      }
 
       setUser(data.user)
-
-      await loadUserRole(
-        data.user.id
-      )
+      await loadUserRole(data.user.id)
 
     } catch (error) {
 
@@ -1283,54 +1285,19 @@ function GalleryAccessRoute({
 function App() {
 
   return (
+    
 
     <BrowserRouter>
+
+      {/* Fixed full-screen video background, behind all website content */}
+      <VideoBackground />
 
       {/* Global cinematic scroll effects; keep inside the app router */}
       <CinematicEffects />
       <ScrollReveal />
 
-      {/* Animated video background shared by every route */}
-      <VideoBackground />
-
-      {/* Keep all page content above the background video */}
+      {/* Keep all website pages above the fixed video background. */}
       <div style={{ position: 'relative', zIndex: 1 }}>
-
-        {/* Make page wrappers transparent so the video behind them can be seen.
-            Existing text, buttons, routes, and functionality remain unchanged. */}
-        <style>{`
-          html, body, #root {
-            background: transparent !important;
-          }
-
-          .website {
-            position: relative;
-            background: transparent !important;
-          }
-
-          .hero-section,
-          .about-section,
-          .members-section,
-          .contact-section,
-          .seo-section,
-          .login-section,
-          footer {
-            background-color: transparent !important;
-          }
-
-          .video-background {
-            position: fixed !important;
-            inset: 0 !important;
-            z-index: 0 !important;
-            pointer-events: none !important;
-          }
-
-          .video-background video {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-          }
-        `}</style>
 
       {/* =================================================
           ANALYTICS TRACKER

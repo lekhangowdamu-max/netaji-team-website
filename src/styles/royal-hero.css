@@ -1,0 +1,227 @@
+
+.royal-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: min(760px, 88svh);
+  place-items: center;
+  overflow: hidden;
+  padding: 80px 20px 100px;
+  color: #fff8e9;
+  text-align: center;
+  background:
+    radial-gradient(
+      ellipse at 50% 30%,
+      rgb(133 48 56 / 65%),
+      transparent 58%
+    ),
+    linear-gradient(145deg, #3c101b, #641b2a 55%, #2c1018);
+}
+
+.royal-hero::before,
+.royal-hero::after {
+  position: absolute;
+  z-index: -1;
+  inset: 22px;
+  border: 1px solid rgb(230 199 127 / 35%);
+  content: '';
+  pointer-events: none;
+}
+
+.royal-hero::after {
+  inset: 30px;
+  border-color: rgb(230 199 127 / 12%);
+}
+
+.royal-hero-pattern {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: 0.14;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 35px,
+      #e6c77f 36px,
+      transparent 37px 70px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 35px,
+      #e6c77f 36px,
+      transparent 37px 70px
+    );
+  mask-image: radial-gradient(ellipse, black, transparent 75%);
+}
+
+.royal-hero-content {
+  width: min(100%, 900px);
+  animation: royal-hero-enter 700ms ease-out both;
+}
+
+.royal-hero-logo {
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 26px;
+  object-fit: contain;
+  border: 2px solid #e6c77f;
+  border-radius: 50%;
+  background: #fffdf7;
+  box-shadow: 0 0 36px rgb(230 199 127 / 22%);
+}
+
+.royal-hero-kicker {
+  margin-bottom: 20px;
+  color: #e6c77f;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.royal-hero h1 {
+  margin: 0;
+  color: #fff8e9;
+  font-size: clamp(1.8rem, 5vw, 4rem);
+  font-weight: 600;
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+.royal-hero h1 span {
+  display: block;
+  margin-top: 8px;
+  color: #e6c77f;
+}
+
+.royal-hero-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 28px auto;
+  color: #e6c77f;
+}
+
+.royal-hero-ornament span {
+  width: clamp(35px, 10vw, 90px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e6c77f);
+}
+
+.royal-hero-ornament span:last-child {
+  transform: rotate(180deg);
+}
+
+.royal-hero-description {
+  max-width: 600px;
+  margin: 0 auto;
+  color: rgb(255 248 233 / 82%);
+  font-size: clamp(0.95rem, 2vw, 1.12rem);
+  line-height: 1.9;
+}
+
+.royal-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.royal-button-gold {
+  color: #3c101b;
+  background: linear-gradient(135deg, #f0d89c, #bd9143);
+}
+
+.royal-button-gold:hover {
+  color: #3c101b;
+  box-shadow: 0 8px 30px rgb(230 199 127 / 22%);
+}
+
+.royal-button-light {
+  color: #fff8e9;
+  border-color: rgb(230 199 127 / 65%);
+  background: rgb(255 255 255 / 4%);
+}
+
+.royal-button-light:hover {
+  color: #fff;
+  background: rgb(255 255 255 / 10%);
+}
+
+.royal-hero-bottom {
+  position: absolute;
+  right: 10%;
+  bottom: 45px;
+  left: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  color: rgb(230 199 127 / 78%);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+}
+
+.royal-hero-bottom-line {
+  width: 50px;
+  height: 1px;
+  background: #bd9143;
+}
+
+@keyframes royal-hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .royal-hero {
+    min-height: 690px;
+    padding: 70px 28px 100px;
+  }
+
+  .royal-hero::before {
+    inset: 12px;
+  }
+
+  .royal-hero::after {
+    inset: 19px;
+  }
+
+  .royal-hero-logo {
+    width: 88px;
+    height: 88px;
+  }
+
+  .royal-hero-kicker {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+  }
+
+  .royal-hero-actions {
+    flex-direction: column;
+  }
+
+  .royal-hero-actions .royal-button {
+    width: 100%;
+  }
+
+  .royal-hero-bottom {
+    bottom: 32px;
+    gap: 9px;
+    font-size: 0.55rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .royal-hero-content {
+    animation: none;
+  }
+}
