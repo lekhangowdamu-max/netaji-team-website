@@ -8011,3 +8011,103 @@ button {
     transition: none !important;
   }
 }
+
+/* Rectangular member cards — keep existing design */
+.members-page .members-list.members-visitor-gallery .member-card,
+.members-page .members-list .member-card {
+  border-radius: 12px !important;
+  aspect-ratio: auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* Keep the card content properly aligned */
+.members-page .members-list .member-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 24px !important;
+}
+
+/* Prevent content from overflowing */
+.members-page .members-list .member-card > * {
+  min-width: 0;
+}
+
+/* FORCE RECTANGULAR MEMBER CARDS */
+.members-page .members-list.members-visitor-gallery {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 24px !important;
+  align-items: stretch !important;
+}
+
+.members-page .members-list.members-visitor-gallery > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 220px !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 900px) {
+  .members-page .members-list.members-visitor-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .members-page .members-list.members-visitor-gallery {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* NETAJI TEAM — RECTANGULAR MEMBER CARDS */
+.members-page .members-list.members-authorized {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 22px !important;
+  align-items: stretch !important;
+}
+
+.members-page .members-list.members-authorized .member-profile.member-details-card {
+  display: grid !important;
+  grid-template-columns: 110px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 18px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 220px !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  padding: 22px !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+}
+
+.members-page .members-list.members-authorized .member-image-frame {
+  width: 110px !important;
+  max-width: 110px !important;
+  margin: 0 !important;
+}
+
+.members-page .members-list.members-authorized .member-info {
+  min-width: 0 !important;
+  padding: 0 !important;
+}
+
+@media (max-width: 900px) {
+  .members-page .members-list.members-authorized {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .members-page .members-list.members-authorized {
+    grid-template-columns: 1fr !important;
+  }
+}
+
